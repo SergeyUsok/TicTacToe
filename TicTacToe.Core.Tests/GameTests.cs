@@ -4,171 +4,193 @@ using TicTacToe.Core.DataObjects;
 namespace TicTacToe.Core.Tests
 {
     [TestFixture]
-    public class GameStateCheckerTests
+    public class GameTests
     {
         [Test]
         public void GetMoveResult_Returns_KeepPlaying()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[3,3];
             board[0, 0] = Mark.Cross;
             board[2, 1] = Mark.Cross;
             board[1, 2] = Mark.Cross;
             board[2, 0] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(2, 0, Mark.Cross), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(2, 0, Mark.Cross));
             
             // Assert
-            Assert.AreEqual(MoveResult.KeepPlaying, result);
+            Assert.AreEqual(GameState.KeepPlaying, result.GameState);
+            Assert.IsNull(result.WinRow);
         }
 
         [Test]
         public void GetMoveResult_LeftDiagonal_Returns_Victory()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[3, 3];
             board[0, 0] = Mark.Cross;
             board[2, 2] = Mark.Cross;
             board[1, 1] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(1, 1, Mark.Cross), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(1, 1, Mark.Cross));
             
             // Assert
-            Assert.AreEqual(MoveResult.Victory, result);
+            Assert.AreEqual(GameState.Victory, result.GameState);
+            Assert.IsNotNull(result.WinRow);
+            Assert.AreEqual(3, result.WinRow.Count);
         }
 
         [Test]
         public void GetMoveResult_RightDiagonal_Returns_Victory()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[3, 3];
             board[0, 2] = Mark.Cross;
             board[1, 1] = Mark.Cross;
             board[2, 0] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(2, 0, Mark.Cross), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(2, 0, Mark.Cross));
 
             // Assert
-            Assert.AreEqual(MoveResult.Victory, result);
+            Assert.AreEqual(GameState.Victory, result.GameState);
+            Assert.IsNotNull(result.WinRow);
+            Assert.AreEqual(3, result.WinRow.Count);
         }
 
         [Test]
         public void GetMoveResult_Horizontal_WinsOnlyIfInRow()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[5, 5];
             board[0, 1] = Mark.Cross;
             board[0, 2] = Mark.Cross;
             board[0, 4] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(0, 4, Mark.Cross), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(0, 4, Mark.Cross));
 
             // Assert
-            Assert.AreEqual(MoveResult.KeepPlaying, result);
+            Assert.AreEqual(GameState.KeepPlaying, result.GameState);
+            Assert.IsNull(result.WinRow);
         }
 
         [Test]
         public void GetMoveResult_Horizontal_Victory()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[5, 5];
             board[0, 1] = Mark.Cross;
             board[0, 2] = Mark.Cross;
             board[0, 3] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(0, 3, Mark.Cross), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(0, 3, Mark.Cross));
 
             // Assert
-            Assert.AreEqual(MoveResult.Victory, result);
+            Assert.AreEqual(GameState.Victory, result.GameState);
+            Assert.IsNotNull(result.WinRow);
+            Assert.AreEqual(3, result.WinRow.Count);
         }
 
         [Test]
         public void GetMoveResult_Vertical_WinsOnlyIfInRow()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[5, 5];
             board[0, 1] = Mark.Cross;
             board[1, 1] = Mark.Cross;
             board[4, 1] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(4, 1, Mark.Cross), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(4, 1, Mark.Cross));
 
             // Assert
-            Assert.AreEqual(MoveResult.KeepPlaying, result);
+            Assert.AreEqual(GameState.KeepPlaying, result.GameState);
+            Assert.IsNull(result.WinRow);
         }
 
         [Test]
         public void GetMoveResult_Vertical_Victory()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[5, 5];
             board[0, 1] = Mark.Cross;
             board[1, 1] = Mark.Cross;
             board[2, 1] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(2, 1, Mark.Cross), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(2, 1, Mark.Cross));
 
             // Assert
-            Assert.AreEqual(MoveResult.Victory, result);
+            Assert.AreEqual(GameState.Victory, result.GameState);
+            Assert.IsNotNull(result.WinRow);
+            Assert.AreEqual(3, result.WinRow.Count);
         }
 
         [Test]
         public void GetMoveResult_Returns_Draw()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[3, 3];
             board[0, 1] = Mark.Cross;
-            board[1, 1] = Mark.Zero;
-            board[2, 1] = Mark.Zero;
+            board[1, 1] = Mark.Nought;
+            board[2, 1] = Mark.Nought;
             board[0, 0] = Mark.Cross;
             board[1, 0] = Mark.Cross;
-            board[2, 0] = Mark.Zero;
+            board[2, 0] = Mark.Nought;
             board[0, 2] = Mark.Cross;
-            board[1, 2] = Mark.Zero;
+            board[1, 2] = Mark.Nought;
             board[2, 2] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(2, 1, Mark.Zero), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(2, 1, Mark.Nought));
 
             // Assert
-            Assert.AreEqual(MoveResult.Draw, result);
+            Assert.AreEqual(GameState.Draw, result.GameState);
+            Assert.IsNull(result.WinRow);
         }
 
         [Test]
         public void GetMoveResult_Returns_KeepPlaying_OneMoveLeft()
         {
             // Arrange
-            const int numberInRow = 3;
             var board = new Mark[3, 3];
             board[0, 1] = Mark.Cross;
-            board[1, 1] = Mark.Zero;
-            board[2, 1] = Mark.Zero;
+            board[1, 1] = Mark.Nought;
+            board[2, 1] = Mark.Nought;
             board[0, 0] = Mark.Cross;
-            board[2, 0] = Mark.Zero;
+            board[2, 0] = Mark.Nought;
             board[0, 2] = Mark.Cross;
-            board[1, 2] = Mark.Zero;
+            board[1, 2] = Mark.Nought;
             board[2, 2] = Mark.Cross;
 
+            var game = new Game(new GameSettings(3, 3, 3));
+
             //  Act
-            var result = GameStateChecker.GetMoveResult(board, Movement.Make(2, 1, Mark.Zero), numberInRow);
+            var result = game.GetMoveResult(board, Movement.Make(2, 1, Mark.Nought));
 
             // Assert
-            Assert.AreEqual(MoveResult.KeepPlaying, result);
+            Assert.AreEqual(GameState.KeepPlaying, result.GameState);
+            Assert.IsNull(result.WinRow);
         }
     }
 }

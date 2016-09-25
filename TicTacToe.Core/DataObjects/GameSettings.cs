@@ -2,9 +2,9 @@
 
 namespace TicTacToe.Core.DataObjects
 {
-    public class GameParameters
+    public class GameSettings
     {
-        public GameParameters(int width, int height, int numberInRowToWin)
+        public GameSettings(int width, int height, int numberInRowToWin)
         {
             if (numberInRowToWin > height || numberInRowToWin > width)
                 throw new ArgumentOutOfRangeException("numberInRowToWin", "Provided numberInRowToWin is greater than board size");

@@ -4,6 +4,6 @@
     {
         Empty,
         Cross,
-        Zero
+        Nought
     }
 }

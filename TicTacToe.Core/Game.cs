@@ -1,56 +1,187 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TicTacToe.Core.DataObjects;
-using TicTacToe.Core.Players;
 
 namespace TicTacToe.Core
 {
-    // TODO 1) Game.StartNew() 2) Board as propery 3) Notification board changed
-    public sealed class Game
+    public sealed class Game : IGame
     {
-        private readonly Player _player1;
-        private readonly Player _player2;
-        private readonly Mark[,] _board;
-        private readonly GameParameters _parameters;
-
-        public Game(Player player1, Player player2, GameParameters parameters)
+        public Game(GameSettings settings)
         {
-            _player1 = player1;
-            _player2 = player2;
+            if (settings == null) 
+                throw new ArgumentNullException("settings");
 
-            _player1.Move += HandleMove;
-            _player2.Move += HandleMove;
-
-            _board = new Mark[parameters.Width,parameters.Height];
-
-            _parameters = parameters;
+            Settings = settings;
+            Board = new Mark[settings.Width, settings.Height];
         }
 
-        public event EventHandler<GameEndedEventArgs> GameEnded;
+        // Made internal for test purposes
+        public Mark[,] Board { get; internal set; }
 
-        private void OnGameEnded(GameEndedEventArgs e)
+        public GameSettings Settings { get; private set; }
+
+        public MoveResult GetMoveResult(Movement movement)
         {
-            var handler = GameEnded;
-            if (handler != null) handler(this, e);
+            return GetMoveResult(Board, movement);
         }
 
-        // TODO handle Movement and GameStatus here and Raise event about that
-        private void HandleMove(object sender, MoveEventArgs args)
+        public MoveResult GetMoveResult(Mark[,] board, Movement movement)
         {
-            var player = (Player)sender;
-            var nextPlayer = player == _player1 ? _player2 : _player1;
+            var moveResult = new MoveResult {Mark = movement.Mark};
+
+            List<Cell> row = null;
             
-            _board[args.Movement.X, args.Movement.Y] = args.Movement.Mark;
+            var state = CheckForVictory(board, movement, out row)
+                       ? GameState.Victory
+                       : CheckForDraw(board)
+                        ? GameState.Draw
+                        : GameState.KeepPlaying;
 
-            var moveResult = GameStateChecker.GetMoveResult(_board, args.Movement, _parameters.NumberInRowToWin);
+            moveResult.GameState = state;
+            moveResult.WinRow = row;
 
-            if (moveResult == MoveResult.KeepPlaying)
-                nextPlayer.MakeMove(_board);
-            else
-                OnGameEnded(new GameEndedEventArgs(moveResult, moveResult == MoveResult.Victory ? player : null));
+            return moveResult;
+        }
+
+        private static bool CheckForDraw(Mark[,] board)
+        {
+            for (int i = 0; i < board.GetLength(0); i++)
+            {
+                for (int j = 0; j < board.GetLength(1); j++)
+                {
+                    if (board[i, j] == Mark.Empty)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool CheckForVictory(Mark[,] board, Movement movement, out List<Cell> row)
+        {
+            row = CheckHorizontal(board, movement) ??
+                   CheckVertical(board, movement) ??
+                   CheckRightDiagonal(board, movement) ??
+                   CheckLeftDigonal(board, movement);
+
+            return row != null;
+        }
+
+        private List<Cell> CheckHorizontal(Mark[,] board, Movement movement)
+        {
+            var winRow = new List<Cell> {new Cell(movement.X, movement.Y)};
+
+            // traverse to right from current point
+            var nextX = movement.X + 1;
+
+            while (board.WithinBounds(nextX, movement.Y) && board[nextX, movement.Y] == movement.Mark)
+            {
+                winRow.Add(new Cell(nextX, movement.Y));
+                nextX = nextX + 1;
+            }
+
+            // traverse to left from current point
+            nextX = movement.X - 1;
+
+            while (board.WithinBounds(nextX, movement.Y) && board[nextX, movement.Y] == movement.Mark)
+            {
+                winRow.Add(new Cell(nextX, movement.Y));
+                nextX = nextX - 1;
+            }
+
+            return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
+        }
+
+        private List<Cell> CheckVertical(Mark[,] board, Movement movement)
+        {
+            var winRow = new List<Cell> {new Cell(movement.X, movement.Y)};
+
+            // traverse up from current point
+            var nextY = movement.Y - 1;
+
+            while (board.WithinBounds(movement.X, nextY) && board[movement.X, nextY] == movement.Mark)
+            {
+                winRow.Add(new Cell(movement.X, nextY));
+                nextY = nextY - 1;
+            }
+
+            // traverse down from current point
+            nextY = movement.Y + 1;
+
+            while (board.WithinBounds(movement.X, nextY) && board[movement.X, nextY] == movement.Mark)
+            {
+                winRow.Add(new Cell(movement.X, nextY));
+                nextY = nextY + 1;
+            }
+
+            return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
+        }
+
+        // Check whether right digonal is filled. Example:
+        //   0 x
+        // 0 x 
+        // x 0 
+        private List<Cell> CheckRightDiagonal(Mark[,] board, Movement movement)
+        {
+            var winRow = new List<Cell> { new Cell(movement.X, movement.Y) };
+
+            // traverse down-left from current point
+            var nextX = movement.X - 1;
+            var nextY = movement.Y + 1;
+
+            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            {
+                winRow.Add(new Cell(nextX, nextY));
+                nextX = nextX - 1;
+                nextY = nextY + 1;
+            }
+
+            // traverse up-right from current point
+            nextX = movement.X + 1;
+            nextY = movement.Y - 1;
+
+            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            {
+                winRow.Add(new Cell(nextX, nextY));
+                nextX = nextX + 1;
+                nextY = nextY - 1;
+            }
+
+            return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
+        }
+
+        // Check whether left digonal is filled. Example:
+        // x 0
+        // 0 x 
+        //   0 x
+        private List<Cell> CheckLeftDigonal(Mark[,] board, Movement movement)
+        {
+            var winRow = new List<Cell> { new Cell(movement.X, movement.Y) };
+
+            // traverse up-left from current point
+            var nextX = movement.X - 1;
+            var nextY = movement.Y - 1;
+
+            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            {
+                winRow.Add(new Cell(nextX, nextY));
+                nextX = nextX - 1;
+                nextY = nextY - 1;
+            }
+
+            // traverse down-right from current point
+            nextX = movement.X + 1;
+            nextY = movement.Y + 1;
+
+            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            {
+                winRow.Add(new Cell(nextX, nextY));
+                nextX = nextX + 1;
+                nextY = nextY + 1;
+            }
+
+            return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
     }
 }

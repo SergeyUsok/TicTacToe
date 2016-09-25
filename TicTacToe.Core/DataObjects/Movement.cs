@@ -10,7 +10,7 @@ namespace TicTacToe.Core.DataObjects
             Y = y;
 
             if(mark == Mark.Empty)
-                throw new ArgumentOutOfRangeException("mark", "Mark should be Zero or Cross");
+                throw new ArgumentOutOfRangeException("mark", "Mark should be Nought or Cross");
 
             Mark = mark;
         }

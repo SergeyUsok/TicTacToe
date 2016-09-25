@@ -1,9 +1,13 @@
-﻿namespace TicTacToe.Core.DataObjects
+﻿using System.Collections.Generic;
+
+namespace TicTacToe.Core.DataObjects
 {
-    public enum MoveResult
+    public class MoveResult
     {
-        KeepPlaying,
-        Draw,
-        Victory
+        public GameState GameState { get; internal set; }
+
+        public Mark Mark { get; internal set; }
+
+        public List<Cell> WinRow { get; internal set; }  
     }
 }

@@ -7,12 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TicTacToe.Annotations;
 
-namespace TicTacToe
+namespace TicTacToe.ViewModels
 {
-    class MainViewModel : INotifyPropertyChanged
+    abstract class ViewModelBase : INotifyPropertyChanged
     {
-        
-
         #region INotifyPropertyChanged members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -20,7 +18,7 @@ namespace TicTacToe
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TicTacToe.Core;
 using TicTacToe.Core.DataObjects;
 using TicTacToe.Core.Players;
@@ -11,135 +7,179 @@ namespace TicTacToe.ConsoleClient
 {
     class GameController
     {
-        private bool _moveAllow = true;
-        private Mark[,] _board;
-        private HumanPlayer _player;
-        private bool _isGameEnded = false;
-
+        private const int Depth = 10;
+        
         public void StartNewGame()
         {
-            Console.WriteLine("New game started. To interrupt the game type 'exit'");
-            Console.WriteLine("Make your move in format 'row-column'");
-
-            _isGameEnded = false;
-            _moveAllow = true;
             var parameters = GetGameParameters();
-            _board = new Mark[parameters.Width, parameters.Height];
-            _player = PrepareHumanPlayer(parameters);
-
             var game = CreateNewGame(parameters);
-            game.GameEnded += OnGameEnded;
+            var minimaxPlayer = GetMinimaxPlayer(game);
 
-            Console.WriteLine(_board.ToStringView());
+            StartGameLoop(game, minimaxPlayer);
+        }
 
-            while (!_isGameEnded)
+        #region Game loop
+
+        private void StartGameLoop(Game game, AiPlayer minimaxAiPlayer)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(@"New game started. To interrupt the game type 'exit'");
+
+            var state = State.HumanTurn;
+            MoveResult result = null;
+
+            while (state == State.AiTurn || state == State.HumanTurn)
             {
-                var read = Console.ReadLine();
+                game.Board.DrawBoard();
 
-                if (read == "exit")
-                    break;
+                var move = state == State.HumanTurn ? 
+                                            HumanMakeMove(game, ref state) 
+                                            : minimaxAiPlayer.MakeMove();  
 
-                ProcessInput(read);
+                state = GetState(game, move, state, out result);
+            }
+
+            HandleGameOver(game, state, result);
+        }
+
+        private void HandleGameOver(Game game, State state, MoveResult result)
+        {
+            if (state == State.Exit)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(@"User interrupted the game. Exiting");
+                return;
+            }
+                
+            if (state == State.Draw)
+            {
+                game.Board.DrawBoard(); // draw final board state
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(@"Game over. Draw");
+                Console.ResetColor();
+            }
+                
+
+            if (state == State.AiWon)
+            {
+                game.Board.DrawBoard(result.WinRow); // draw final board state
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(@"Game over. Computer won!");
+                Console.ResetColor();
+            }
+
+            if (state == State.HumanWon)
+            {
+                game.Board.DrawBoard(result.WinRow); // draw final board state
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(@"Game over. You won!");
+                Console.ResetColor();
             }
         }
 
-        private void OnGameEnded(object sender, GameEndedEventArgs args)
+        private State GetState(Game game, Movement move, State previousState, out MoveResult result)
         {
-            _isGameEnded = true;
+            if (previousState == State.Exit)
+            {
+                result = null;
+                return State.Exit;
+            }
+                
+            result = game.GetMoveResult(move);
 
-            if (args.Result == MoveResult.Draw)
+            if (result.GameState == GameState.KeepPlaying)
             {
-                Console.WriteLine("Game ended with draw");
+                return previousState == State.AiTurn ? State.HumanTurn : State.AiTurn;
             }
-            else
+
+            if (result.GameState == GameState.Victory)
             {
-                if(args.Winner == _player)
-                    Console.WriteLine("You win!");
-                else
-                    Console.WriteLine("You lose");
+                return previousState == State.AiTurn ? State.AiWon : State.HumanWon;
             }
+
+            return State.Draw;
         }
 
-        private void ProcessInput(string read)
+        private Movement HumanMakeMove(Game game, ref State state)
         {
-            if (_moveAllow)
+            int x = -1;
+            int y = -1;
+            string input;
+
+            do
             {
-                ParseAndMove(read);
-            }
-            else
-            {
-                Console.WriteLine("Please wait until AI make move");
-            }
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(@"Make your move in format 'row-column'");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                
+                input = Console.ReadLine();
+                
+                Console.ForegroundColor = ConsoleColor.Cyan;
+
+                if(input.ToUpper() == "EXIT")
+                    state = State.Exit;
+
+            } while (state != State.Exit && !ParseInput(input, game, out x, out y));
+            
+            if(state != State.Exit)
+                game.Board[x, y] = Mark.Cross;
+
+            return new Movement(x, y, Mark.Cross);
         }
 
-        private void ParseAndMove(string read)
+        private bool ParseInput(string input, Game game, out int x, out int y)
         {
-            var coords = read.Split('-');
+            // out values should be assigned
+            x = -1;
+            y = -1;
+            
+            var coords = input.Split('-');
 
             if (coords.Length != 2)
             {
-                Console.WriteLine("Unrecognized format of user input. Please pass your move in format 'row-column'");
-                return;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine(@"Unrecognized format of user input");
+                Console.ResetColor();
+                return false;
             }
 
-            int x;
-            int y;
             if (int.TryParse(coords[0], out x) && int.TryParse(coords[1], out y))
             {
                 x = x - 1;
                 y = y - 1;
 
-                if (WithinBounds(x, y) && _board[x, y] == Mark.Empty)
+                if (game.Board.WithinBounds(x, y) && game.Board[x, y] == Mark.Empty)
                 {
-                    _board[x, y] = Mark.Cross;
-                    Console.WriteLine(_board.ToStringView());
-                    _moveAllow = false;
-                    _player.MakeMove(new Movement(x, y, Mark.Cross));
-                }
-                else
-                {
-                    Console.WriteLine("Incorrect move. Probably chosen cell not empty or it out of board bounds");
+                    return true;
                 }
             }
-            else
-            {
-                Console.WriteLine("Unrecognized format of user input. Please pass your move in format 'row-column'");
-            }
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(@"Incorrect move. Probably chosen cell is not empty or it out of board bounds");
+            Console.ResetColor();
+
+            return false;
         }
 
-        private bool WithinBounds(int x, int y)
+        #endregion
+        
+        #region Prepration
+
+        private GameSettings GetGameParameters()
         {
-            return x >= 0 &&
-                   x < _board.GetLength(0) &&
-                   y >= 0 &&
-                   y < _board.GetLength(1);
+            return new GameSettings(3, 3, 3);
         }
 
-        private Game CreateNewGame(GameParameters parameters)
+        private AiPlayer GetMinimaxPlayer(Game game)
         {
-            return new Game(_player, 
-                            new MiniMaxPlayer(parameters, Mark.Zero, 10), 
-                            parameters);
+            return new MiniMaxAiPlayer(game, Mark.Nought, Depth);
         }
 
-        private GameParameters GetGameParameters()
+        private Game CreateNewGame(GameSettings settings)
         {
-            return new GameParameters(3, 3, 3);
+            return new Game(settings);
         }
 
-        private HumanPlayer PrepareHumanPlayer(GameParameters parameters)
-        {
-            var player = new HumanPlayer(parameters, Mark.Cross);
-
-            player.AllowMovement += OnMoveAllowment;
-            return player;
-        }
-
-        private void OnMoveAllowment(object sender, BoardChangedEventArgs args)
-        {
-            _moveAllow = true;
-            Console.WriteLine(args.Board.ToStringView());
-            Console.WriteLine("Make your move in format 'row-column'");
-        }
+        #endregion
     }
 }
