@@ -28,7 +28,7 @@ namespace TicTacToe.ViewModels
         private void OnGameStarted(GameStartedEvent @event)
         {
             Game = new GameViewModel(@event.Game, @event.PlayerX, @event.PlayerO);
-            Game.Start();
+            Game.StartGameLoop();
         }
     }
 }

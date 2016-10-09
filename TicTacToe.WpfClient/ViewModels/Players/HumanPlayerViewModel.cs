@@ -1,4 +1,5 @@
-﻿using TicTacToe.Core.DataObjects;
+﻿using System.Threading.Tasks;
+using TicTacToe.Core.DataObjects;
 using TicTacToe.ViewModels.Events;
 
 namespace TicTacToe.ViewModels.Players
@@ -6,7 +7,7 @@ namespace TicTacToe.ViewModels.Players
     class HumanPlayerViewModel : IPlayerViewModel
     {
         private readonly Mark _playersMark;
-        private bool _isMyTurn = false; // required for case when we have 2 Human players and need to determine which one is should move
+        private TaskCompletionSource<Movement> _tcs;
 
         public HumanPlayerViewModel(Mark playersMark)
         {
@@ -14,10 +15,15 @@ namespace TicTacToe.ViewModels.Players
             EventAggregator.Instance.Subscribe<TileClickedEvent>(OnTileClicked);
         }
 
-        public void MakeMove(BoardViewModel board)
+        public async Task<Movement> MakeMoveAsync(BoardViewModel board)
         {
-            _isMyTurn = true;
             board.IsActive = true; // make board available for user's input
+            
+            _tcs = new TaskCompletionSource<Movement>();
+            var task = await _tcs.Task;
+
+            _tcs = null; // reset Task Completion Source for next move
+            return task;
         }
 
         public Mark MyMark
@@ -30,14 +36,12 @@ namespace TicTacToe.ViewModels.Players
 
         private void OnTileClicked(TileClickedEvent @event)
         {
-            // we cannot change this variable after event raising
-            // because event will begin chain reaction of game moves
-            // it will be set only after chain finishes
-            var isMyTurn = _isMyTurn;
-            _isMyTurn = false;
+            // If task complition source is not intialized
+            // then this event is not intended ofr current Player and we do nothing
+            if(_tcs == null)
+                return;
 
-            if(isMyTurn)
-                EventAggregator.Instance.Publish(new MoveEvent(new Movement(@event.X, @event.Y, _playersMark)));
+            _tcs.SetResult(new Movement(@event.X, @event.Y, _playersMark));
         }
     }
 }

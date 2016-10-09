@@ -14,13 +14,11 @@ namespace TicTacToe.ViewModels.Players
             _aiPlayer = aiPlayer;
         }
 
-        public void MakeMove(BoardViewModel board)
+        public async Task<Movement> MakeMoveAsync(BoardViewModel board)
         {
             board.IsActive = false; // make board inactive for user's input
 
-            Task.Run(() => _aiPlayer.MakeMove())
-                .ContinueWith(t => EventAggregator.Instance.Publish(new MoveEvent(t.Result)),
-                              TaskScheduler.FromCurrentSynchronizationContext());
+            return await Task.Run(() => _aiPlayer.MakeMove());
         }
 
         public Mark MyMark

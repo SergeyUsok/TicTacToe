@@ -1,10 +1,11 @@
-﻿using TicTacToe.Core.DataObjects;
+﻿using System.Threading.Tasks;
+using TicTacToe.Core.DataObjects;
 
 namespace TicTacToe.ViewModels.Players
 {
     interface IPlayerViewModel
     {
-        void MakeMove(BoardViewModel board);
+        Task<Movement> MakeMoveAsync(BoardViewModel board);
 
         Mark MyMark { get; }
     }

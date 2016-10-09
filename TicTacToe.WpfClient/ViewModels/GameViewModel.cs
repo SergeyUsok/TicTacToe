@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using TicTacToe.Annotations;
 using TicTacToe.Core;
 using TicTacToe.Core.DataObjects;
-using TicTacToe.ViewModels.Events;
 using TicTacToe.ViewModels.Helpers;
 using TicTacToe.ViewModels.Players;
 
@@ -13,6 +12,7 @@ namespace TicTacToe.ViewModels
     // TODO: 9. Add styles
     // TODO: 10. Add selector for Depth
     // TODO: fix bug with OutOfRange excpetion when selecting new game when current game is not ended
+	// TODO: Alpha-beta cutoff
     class GameViewModel : ViewModelBase
     {
         private readonly IGame _game;
@@ -37,56 +37,38 @@ namespace TicTacToe.ViewModels
             MessagesStack = new ObservableCollection<string>();
 
             _playersIterator = new RoundRobinIterator<IPlayerViewModel>(playerX, player0);
-
-            EventAggregator.Instance.Subscribe<MoveEvent>(OnPlayerMove);
         }
 
-        public void Start()
+        public async void StartGameLoop()
         {
             Timer.Start();
-            NextPlayerMove();
+
+            MoveResult moveResult;
+
+            do
+            {
+                var nextPlayer = _playersIterator.Next();
+
+                MessagesStack.Push(ResourcesHolder.GetTurnMessage(nextPlayer.MyMark));
+
+                var move = await nextPlayer.MakeMoveAsync(Board);
+
+                MessagesStack.Push(ResourcesHolder.GetMoveMessage(nextPlayer.MyMark));
+
+                // set Mark to proper board cell
+                Board.SetBoardCell(move.X, move.Y, move.Mark);
+
+                moveResult = _game.GetMoveResult(move);
+
+            } while (moveResult.GameState == GameState.KeepPlaying);
+
+            ProcessGameOver(moveResult);
         }
 
         public BoardViewModel Board { get; private set; }
         public TimerViewModel Timer { get; private set; }
 
         public ObservableCollection<string> MessagesStack { get; set; }
-
-        private void NextPlayerMove()
-        {
-            var nextPlayer = _playersIterator.Next();
-            MessagesStack.Push(ResourcesHolder.GetTurnMessage(nextPlayer.MyMark));
-            nextPlayer.MakeMove(Board);
-        }
-
-        private void OnPlayerMove(MoveEvent moveEvent)
-        {
-            var move = moveEvent.Movement;
-
-            // print message
-            MessagesStack.Push(ResourcesHolder.GetMoveMessage(move.Mark));
-
-            // set Mark to proper board cell
-            Board.SetBoardCell(move.X, move.Y, move.Mark);
-
-            // get move result
-            var moveResult = _game.GetMoveResult(move);
-
-            // process game state
-            ProcessMoveResult(moveResult);
-        }
-
-        private void ProcessMoveResult(MoveResult moveResult)
-        {
-            if (moveResult.GameState == GameState.KeepPlaying)
-            {
-                NextPlayerMove();
-            }
-            else
-            {
-                ProcessGameOver(moveResult);
-            }
-        }
 
         private void ProcessGameOver(MoveResult moveResult)
         {

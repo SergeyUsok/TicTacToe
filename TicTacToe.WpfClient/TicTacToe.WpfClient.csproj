@@ -57,7 +57,6 @@
     <Compile Include="ViewModels\BoardViewModel.cs" />
     <Compile Include="ViewModels\Events\EventAggregator.cs" />
     <Compile Include="ViewModels\Events\GameStartedEvent.cs" />
-    <Compile Include="ViewModels\Events\MoveEvent.cs" />
     <Compile Include="ViewModels\Events\TileClickedEvent.cs" />
     <Compile Include="ViewModels\GameViewModel.cs" />
     <Compile Include="ViewModels\GamePreferencesViewModel.cs" />

@@ -47,3 +47,11 @@ Temporary Items
 .apdisk
 *.cache
 packages/NUnit.3.2.1/lib/dotnet/nunit.framework.dll
+packages/NUnit.3.2.1/lib/dotnet/nunit.framework.xml
+*.dll
+packages/NUnit.3.2.1/lib/net35/nunit.framework.xml
+packages/NUnit.3.2.1/lib/net40/nunit.framework.xml
+TicTacToe.ConsoleClient/bin/Debug/TicTacToe.ConsoleClient.exe
+*.pdb
+TicTacToe.ConsoleClient/bin/Debug/TicTacToe.ConsoleClient.vshost.exe
+TicTacToe.ConsoleClient/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
