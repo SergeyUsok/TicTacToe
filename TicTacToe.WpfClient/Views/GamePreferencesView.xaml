@@ -3,16 +3,73 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:r="clr-namespace:TicTacToe.ViewModels.Helpers"
              mc:Ignorable="d" Width="614" Height="177">
+    
+    <UserControl.Resources>
+        <Style x:Key="DepthPanelX" TargetType="StackPanel">
+            <Setter Property="StackPanel.Visibility" Value="Hidden" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedPlayerX}" Value="{x:Static r:ResourcesHolder.MiniMaxPlayer}">
+                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding SelectedPlayerX}" Value="{x:Static r:ResourcesHolder.OptimizedMinimaxPlayer}">
+                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DepthPanelO" TargetType="StackPanel">
+            <Setter Property="StackPanel.Visibility" Value="Hidden" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedPlayer0}" Value="{x:Static r:ResourcesHolder.MiniMaxPlayer}">
+                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding SelectedPlayer0}" Value="{x:Static r:ResourcesHolder.OptimizedMinimaxPlayer}">
+                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid>
 
-        <ComboBox ItemsSource="{Binding BoardSizes}" SelectedItem="{Binding SelectedBoard}" Height="28" VerticalAlignment="Top" Margin="95,65,375,0"  />
-        <ComboBox ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayerX}" Margin="95,12,375,137"  />
-        <ComboBox ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer0}" Margin="371,12,99,137"  />
-        <Label Content="Player X" HorizontalAlignment="Left" Margin="20,14,0,0" VerticalAlignment="Top" Width="58"/>
-        <Label Content="Player 0" HorizontalAlignment="Left" Margin="285,14,0,0" VerticalAlignment="Top" Width="59"/>
-        <Label Content="Board" HorizontalAlignment="Left" Margin="20,65,0,0" VerticalAlignment="Top" Width="59"/>
-        <Button Content="Start Game" HorizontalAlignment="Left" Margin="95,115,0,0" VerticalAlignment="Top" Width="98" Height="28" Command="{Binding StartGame}"/>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="50 15 0 0">
+                <Label Content="Player X" HorizontalAlignment="Left" VerticalAlignment="Top" Width="58"/>
+                <ComboBox ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayerX}" Width="200" Height="25" />
+
+                <StackPanel Orientation="Horizontal" Margin="20 0 0 0" Style="{StaticResource DepthPanelX}">
+                    <Label Content="Depth" HorizontalAlignment="Left" VerticalAlignment="Top" Width="58" />
+                    <TextBox Width="35">
+                        <TextBox.Text>
+                            <Binding Path="DepthX" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True" />
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Margin="50 15 0 0">
+                <Label Content="Player 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="59" />
+                <ComboBox ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer0}" Width="200" Height="25" />
+
+                <StackPanel Orientation="Horizontal" Margin="20 0 0 0" Style="{StaticResource DepthPanelO}">
+                    <Label Content="Depth" HorizontalAlignment="Left" VerticalAlignment="Top" Width="58" />
+                    <TextBox Width="35">
+                        <TextBox.Text>
+                            <Binding Path="DepthO" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True" />
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="50 15 0 0">
+                <Label Content="Board" HorizontalAlignment="Left" VerticalAlignment="Top" Width="59" />
+                <ComboBox ItemsSource="{Binding BoardSizes}" SelectedItem="{Binding SelectedBoard}" VerticalAlignment="Top" Width="200" Height="25" />
+            </StackPanel>
+
+            <Button Content="Start Game" HorizontalAlignment="Left" VerticalAlignment="Top" Width="98" Height="28" Command="{Binding StartGame}" Margin="50 15 0 0"/>
+        </StackPanel>
 
     </Grid>
 

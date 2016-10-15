@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using TicTacToe.Core;
 using TicTacToe.Core.DataObjects;
@@ -27,14 +28,79 @@ namespace TicTacToe.ViewModels
         public string SelectedPlayerX
         {
             get { return _selectedPlayerX; }
-            set { _selectedPlayerX = value; }
+            set
+            {
+                if (value == _selectedPlayerX) return;
+                _selectedPlayerX = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _depthX = 5; // default depth value
+        private string _depthXString = 5.ToString(); // default value to show
+        public string DepthX
+        {
+            get { return _depthXString; }
+            set
+            {
+                if (value == _depthXString) return;
+
+                _depthXString = value;
+
+                int result;
+                if (int.TryParse(value, out result))
+                {
+                    _depthX = result;
+                }
+                else
+                {
+                    _depthX = int.MinValue;
+                    throw new InvalidDataException("Invalid Depth specified");
+                }
+                    
+
+                OnPropertyChanged();
+            }
         }
 
         private string _selectedPlayer0 = ResourcesHolder.HumanSymbol; // default value to show
         public string SelectedPlayer0
         {
             get { return _selectedPlayer0; }
-            set { _selectedPlayer0 = value; }
+            set
+            {
+                if (value == _selectedPlayer0) return;
+                _selectedPlayer0 = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
+        private int _depthO = 5; // default depth value
+        private string _depthOString = 5.ToString(); // default value to show
+        public string DepthO
+        {
+            get { return _depthOString; }
+            set
+            {
+                if (value == _depthOString) return;
+
+                _depthOString = value;
+
+                int result;
+                if (int.TryParse(value, out result))
+                {
+                    _depthO = result;
+                }
+                else
+                {
+                    _depthO = int.MinValue;
+                    throw new InvalidDataException("Invalid Depth specified");
+                }
+
+                OnPropertyChanged();
+            }
         }
 
         private string _selectedBoard = "3 X 3 (3)"; // default value to show
@@ -53,7 +119,7 @@ namespace TicTacToe.ViewModels
             get
             {
                 if (_startGame == null)
-                    _startGame = new RelayCommand(_ => NotifyGameStarted(), _ => ParametersAreNotNull());
+                    _startGame = new RelayCommand(_ => NotifyGameStarted(), _ => ParametersAreValid());
 
                 return _startGame;
             }
@@ -87,17 +153,35 @@ namespace TicTacToe.ViewModels
 
         private IPlayerViewModel GetPlayerX(Game game, string selectedPlayerX)
         {
-            return PlayerViewModelsFactory.GetPlayer(selectedPlayerX, Mark.Cross, game);
+            return PlayerViewModelsFactory.GetPlayer(selectedPlayerX, Mark.Cross, game, _depthX);
         }
 
         private IPlayerViewModel GetPlayer0(Game game, string selectedPlayer0)
         {
-            return PlayerViewModelsFactory.GetPlayer(selectedPlayer0, Mark.Nought, game);
+            return PlayerViewModelsFactory.GetPlayer(selectedPlayer0, Mark.Nought, game, _depthO);
         }
 
-        private bool ParametersAreNotNull()
+        private bool ParametersAreValid()
         {
-            return SelectedBoard != null && SelectedPlayer0 != null && SelectedPlayerX != null;
+            var isValid = SelectedBoard != null && SelectedPlayer0 != null && SelectedPlayerX != null;
+
+            if (SelectedPlayerX != null &&
+                (SelectedPlayerX.Equals(ResourcesHolder.MiniMaxPlayer) ||
+                 SelectedPlayerX.Equals(ResourcesHolder.OptimizedMinimaxPlayer)))
+            {
+
+                isValid = isValid && _depthX >= 0;
+            }
+
+            if (SelectedPlayer0 != null &&
+                (SelectedPlayer0.Equals(ResourcesHolder.MiniMaxPlayer) ||
+                 SelectedPlayer0.Equals(ResourcesHolder.OptimizedMinimaxPlayer)))
+            {
+
+                isValid = isValid && _depthO >= 0;
+            }
+
+            return isValid;
         }
     }
 }

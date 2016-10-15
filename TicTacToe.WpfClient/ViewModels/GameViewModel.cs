@@ -10,9 +10,8 @@ namespace TicTacToe.ViewModels
 {
     // TODO: 4. EventTrigger for animation
     // TODO: 9. Add styles
-    // TODO: 10. Add selector for Depth
-    // TODO: fix bug with OutOfRange excpetion when selecting new game when current game is not ended
 	// TODO: Alpha-beta cutoff
+    // TODO: add another AI
     class GameViewModel : ViewModelBase
     {
         private readonly IGame _game;

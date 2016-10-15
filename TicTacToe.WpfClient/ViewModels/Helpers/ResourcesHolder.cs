@@ -65,6 +65,16 @@ namespace TicTacToe.ViewModels.Helpers
             get { return Resources.HumanPlayer; }
         }
 
+        public static string MiniMaxPlayer
+        {
+            get { return Resources.MinimaxPlayer; }
+        }
+
+        public static string OptimizedMinimaxPlayer
+        {
+            get { return Resources.OptimizedMinimaxPlayer; }
+        }
+
         public static string GetMoveMessage(Mark mark)
         {
             return string.Format(Resources.MoveMessage, mark.AsString());

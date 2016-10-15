@@ -13,16 +13,16 @@ namespace TicTacToe.ViewModels.Helpers
 {
     class PlayerViewModelsFactory
     {
-        public static IPlayerViewModel GetPlayer(string playerName, Mark playersMark, IGame game)
+        public static IPlayerViewModel GetPlayer(string playerName, Mark playersMark, IGame game, int depth)
         {
             if(playerName.Equals(Resources.HumanPlayer))
                 return new HumanPlayerViewModel(playersMark);
 
             if(playerName.Equals(Resources.MinimaxPlayer))
-                return new AiPlayerViewModel(new MiniMaxAiPlayer(game, playersMark, 10));
+                return new AiPlayerViewModel(new MiniMaxAiPlayer(game, playersMark, depth));
 
             if (playerName.Equals(Resources.OptimizedMinimaxPlayer))
-                return new AiPlayerViewModel(new NeighborsLookingMiniMaxAiPlayer(game, playersMark, 10));
+                return new AiPlayerViewModel(new NeighborsLookingMiniMaxAiPlayer(game, playersMark, depth));
 
             if (playerName.Equals(Resources.IntuitiveAI))
                 throw new NotImplementedException();
