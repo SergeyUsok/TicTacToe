@@ -33,10 +33,8 @@ namespace TicTacToe.Core.Players
 
         private Movement GetRandomInitialMove()
         {
-            var random = new Random(0);
-
-            var x = random.Next(Game.Settings.Width);
-            var y = random.Next(Game.Settings.Height);
+            var x = DateTime.Now.Second % Game.Settings.Width;
+            var y = DateTime.Now.Second % Game.Settings.Height;
 
             return Movement.Make(x, y, MyMark);
         }
@@ -67,20 +65,13 @@ namespace TicTacToe.Core.Players
             {
                 return AssessMove(result, move.Key.Mark, depth);
             }
-                
+
             var scores = GetMoves(move.Value, playersMark)
-                .Select(childMove => MiniMax(childMove, InvertMark(playersMark), depth + 1))
-                .ToList();
+                        .AsParallel()
+                        .Select(childMove => MiniMax(childMove, InvertMark(playersMark), depth + 1))
+                        .ToList();
 
             return playersMark == MyMark ? scores.Max() : scores.Min();
-        }
-
-        private Mark InvertMark(Mark playersMark)
-        {
-            if (playersMark == Mark.Cross)
-                return Mark.Nought;
-
-            return Mark.Cross;
         }
 
         private bool IsTerminal(KeyValuePair<Movement, Mark[,]> move, int depth, out GameState moveResult)
@@ -95,7 +86,7 @@ namespace TicTacToe.Core.Players
         }
 
         // Algorithm assess each move by giving Max to win move, 
-        // Min to lost move and 0 to Draw or non-fnished game
+        // Min to lost move and 0 to Draw or non-finished game
         // Algorithm also takes into account current considered Depth
         // Therefore Copmuter tries to finish game as fast as possible
         // and loose as later as possible

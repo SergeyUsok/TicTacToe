@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using TicTacToe.Annotations;
 using TicTacToe.Core;
 using TicTacToe.Core.DataObjects;
@@ -12,6 +13,7 @@ namespace TicTacToe.ViewModels
     // TODO: 9. Add styles
 	// TODO: Alpha-beta cutoff
     // TODO: add another AI
+    // TODO: highlight moves by clicking on moves history
     class GameViewModel : ViewModelBase
     {
         private readonly IGame _game;
@@ -38,7 +40,7 @@ namespace TicTacToe.ViewModels
             _playersIterator = new RoundRobinIterator<IPlayerViewModel>(playerX, player0);
         }
 
-        public async void StartGameLoop()
+        public async Task StartGameLoopAsync()
         {
             Timer.Start();
 

@@ -41,10 +41,12 @@
   <ItemGroup>
     <Compile Include="DataObjects\Cell.cs" />
     <Compile Include="DataObjects\MoveResult.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="BoardExtensions.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="DataObjects\GameSettings.cs" />
     <Compile Include="IGame.cs" />
+    <Compile Include="Players\IntuitiveAiPlayer.cs" />
+    <Compile Include="Players\StupidRandomAiPlayer.cs" />
     <Compile Include="RoundRobinIterator.cs" />
     <Compile Include="Players\NeighborsLookingMiniMaxAiPlayer.cs" />
     <Compile Include="Players\AiPlayer.cs" />

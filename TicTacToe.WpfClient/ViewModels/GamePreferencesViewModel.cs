@@ -36,7 +36,7 @@ namespace TicTacToe.ViewModels
             }
         }
 
-        private int _depthX = 5; // default depth value
+        private int? _depthX = 5; // default depth value
         private string _depthXString = 5.ToString(); // default value to show
         public string DepthX
         {
@@ -48,13 +48,13 @@ namespace TicTacToe.ViewModels
                 _depthXString = value;
 
                 int result;
-                if (int.TryParse(value, out result))
+                if (int.TryParse(value, out result) && result >= 0)
                 {
                     _depthX = result;
                 }
                 else
                 {
-                    _depthX = int.MinValue;
+                    _depthX = null;
                     throw new InvalidDataException("Invalid Depth specified");
                 }
                     
@@ -77,7 +77,7 @@ namespace TicTacToe.ViewModels
 
 
 
-        private int _depthO = 5; // default depth value
+        private int? _depthO = 5; // default depth value
         private string _depthOString = 5.ToString(); // default value to show
         public string DepthO
         {
@@ -89,13 +89,13 @@ namespace TicTacToe.ViewModels
                 _depthOString = value;
 
                 int result;
-                if (int.TryParse(value, out result))
+                if (int.TryParse(value, out result) && result >= 0)
                 {
                     _depthO = result;
                 }
                 else
                 {
-                    _depthO = int.MinValue;
+                    _depthO = null;
                     throw new InvalidDataException("Invalid Depth specified");
                 }
 
@@ -153,12 +153,12 @@ namespace TicTacToe.ViewModels
 
         private IPlayerViewModel GetPlayerX(Game game, string selectedPlayerX)
         {
-            return PlayerViewModelsFactory.GetPlayer(selectedPlayerX, Mark.Cross, game, _depthX);
+            return PlayerViewModelsFactory.GetPlayer(selectedPlayerX, Mark.Cross, game, _depthX.Value);
         }
 
         private IPlayerViewModel GetPlayer0(Game game, string selectedPlayer0)
         {
-            return PlayerViewModelsFactory.GetPlayer(selectedPlayer0, Mark.Nought, game, _depthO);
+            return PlayerViewModelsFactory.GetPlayer(selectedPlayer0, Mark.Nought, game, _depthO.Value);
         }
 
         private bool ParametersAreValid()
@@ -170,7 +170,7 @@ namespace TicTacToe.ViewModels
                  SelectedPlayerX.Equals(ResourcesHolder.OptimizedMinimaxPlayer)))
             {
 
-                isValid = isValid && _depthX >= 0;
+                isValid = isValid && _depthX.HasValue;
             }
 
             if (SelectedPlayer0 != null &&
@@ -178,7 +178,7 @@ namespace TicTacToe.ViewModels
                  SelectedPlayer0.Equals(ResourcesHolder.OptimizedMinimaxPlayer)))
             {
 
-                isValid = isValid && _depthO >= 0;
+                isValid = isValid && _depthO.HasValue;
             }
 
             return isValid;

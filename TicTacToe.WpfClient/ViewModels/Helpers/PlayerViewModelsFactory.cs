@@ -25,10 +25,10 @@ namespace TicTacToe.ViewModels.Helpers
                 return new AiPlayerViewModel(new NeighborsLookingMiniMaxAiPlayer(game, playersMark, depth));
 
             if (playerName.Equals(Resources.IntuitiveAI))
-                throw new NotImplementedException();
+                return new AiPlayerViewModel(new IntuitiveAiPlayer(game, playersMark));
 
             if (playerName.Equals(Resources.DummyAI))
-                throw new NotImplementedException();
+                return new AiPlayerViewModel(new StupidRandomAiPlayer(game, playersMark));
 
             throw new NotSupportedException("Provided Player is not supported");
         }

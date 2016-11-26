@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using TicTacToe.Core.DataObjects;
 
@@ -70,50 +69,14 @@ namespace TicTacToe.Core
 
         private List<Cell> CheckHorizontal(Mark[,] board, Movement movement)
         {
-            var winRow = new List<Cell> {new Cell(movement.X, movement.Y)};
-
-            // traverse to right from current point
-            var nextX = movement.X + 1;
-
-            while (board.WithinBounds(nextX, movement.Y) && board[nextX, movement.Y] == movement.Mark)
-            {
-                winRow.Add(new Cell(nextX, movement.Y));
-                nextX = nextX + 1;
-            }
-
-            // traverse to left from current point
-            nextX = movement.X - 1;
-
-            while (board.WithinBounds(nextX, movement.Y) && board[nextX, movement.Y] == movement.Mark)
-            {
-                winRow.Add(new Cell(nextX, movement.Y));
-                nextX = nextX - 1;
-            }
-
+            var winRow = board.CountHorizontal(movement);
+            
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
 
         private List<Cell> CheckVertical(Mark[,] board, Movement movement)
         {
-            var winRow = new List<Cell> {new Cell(movement.X, movement.Y)};
-
-            // traverse up from current point
-            var nextY = movement.Y - 1;
-
-            while (board.WithinBounds(movement.X, nextY) && board[movement.X, nextY] == movement.Mark)
-            {
-                winRow.Add(new Cell(movement.X, nextY));
-                nextY = nextY - 1;
-            }
-
-            // traverse down from current point
-            nextY = movement.Y + 1;
-
-            while (board.WithinBounds(movement.X, nextY) && board[movement.X, nextY] == movement.Mark)
-            {
-                winRow.Add(new Cell(movement.X, nextY));
-                nextY = nextY + 1;
-            }
+            var winRow = board.CountVertical(movement);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
@@ -124,29 +87,7 @@ namespace TicTacToe.Core
         // x 0 
         private List<Cell> CheckRightDiagonal(Mark[,] board, Movement movement)
         {
-            var winRow = new List<Cell> { new Cell(movement.X, movement.Y) };
-
-            // traverse down-left from current point
-            var nextX = movement.X - 1;
-            var nextY = movement.Y + 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
-            {
-                winRow.Add(new Cell(nextX, nextY));
-                nextX = nextX - 1;
-                nextY = nextY + 1;
-            }
-
-            // traverse up-right from current point
-            nextX = movement.X + 1;
-            nextY = movement.Y - 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
-            {
-                winRow.Add(new Cell(nextX, nextY));
-                nextX = nextX + 1;
-                nextY = nextY - 1;
-            }
+            var winRow = board.CountRightDiagonal(movement);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
@@ -157,29 +98,7 @@ namespace TicTacToe.Core
         //   0 x
         private List<Cell> CheckLeftDigonal(Mark[,] board, Movement movement)
         {
-            var winRow = new List<Cell> { new Cell(movement.X, movement.Y) };
-
-            // traverse up-left from current point
-            var nextX = movement.X - 1;
-            var nextY = movement.Y - 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
-            {
-                winRow.Add(new Cell(nextX, nextY));
-                nextX = nextX - 1;
-                nextY = nextY - 1;
-            }
-
-            // traverse down-right from current point
-            nextX = movement.X + 1;
-            nextY = movement.Y + 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
-            {
-                winRow.Add(new Cell(nextX, nextY));
-                nextX = nextX + 1;
-                nextY = nextY + 1;
-            }
+            var winRow = board.CountLeftDigonal(movement);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }

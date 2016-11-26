@@ -1,4 +1,6 @@
-﻿using TicTacToe.ViewModels.Events;
+﻿using System.Threading.Tasks;
+using System.Windows;
+using TicTacToe.ViewModels.Events;
 
 namespace TicTacToe.ViewModels
 {
@@ -28,7 +30,9 @@ namespace TicTacToe.ViewModels
         private void OnGameStarted(GameStartedEvent @event)
         {
             Game = new GameViewModel(@event.Game, @event.PlayerX, @event.PlayerO);
-            Game.StartGameLoop();
+            Game.StartGameLoopAsync()
+                .ContinueWith(t => MessageBox.Show("Some error occurred " + t.Exception),
+                              TaskContinuationOptions.OnlyOnFaulted);
         }
     }
 }
