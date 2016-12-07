@@ -13,70 +13,73 @@ namespace TicTacToe.Core.Players
         }
 
         // simulating Human behavior when one makes decision how to move
-        public override Movement MakeMove()
+        public override Move MakeMove()
         {
-            // 1. get all empty cells where move is possible
-            var emptyCells = GetEmptyCells().ToList();
+            var move = Game.Board.IsEmpty() ? GetRandomMove() 
+                                            : GetEmptyCells().Select(cell => AssessMove(cell))
+                                                             .Aggregate((max, next) => max.Key >= next.Key ? max : next) // since there is no out-of-box method MaxBy use Aggregate then
+                                                             .Value;
 
-            var movement = GetWinMove(emptyCells) ??    // 2. Looking if Victory is possible by any move. If any move in that way
-                           GetPreventionMove(emptyCells) ?? // 3. If no Victory moves available check for opponent's Victory and try prevent it
-                           GetRandomMove(emptyCells); // 4. If nothing to prevent move randomly 
-
-            Game.Board[movement.X, movement.Y] = movement.Mark;
-            return movement;
+            Game.Board[move.X, move.Y] = move.Mark;
+            return move;
         }
 
-        private int AssessMove()
+        // Caclualte degree of usefulness for player and degree of sabotage for opponent player
+        // the bigger number of cells in row then bigger degree of usefulness
+        // the bigger number of cells in row we destroy for opponent then bigger degree of sabotage
+        private KeyValuePair<int, Move> AssessMove(Cell cell)
         {
+            var myMove = Move.Make(cell.X, cell.Y, MyMark);
+            var opponentsMove = Move.Make(cell.X, cell.Y, InvertMark(MyMark));
+
+            // calculate usefulness and sabotage by pairs for each direction (vetical. horizontal etc.) 
+            // and get pair with maximum sum
+            var maximum = Maximum(
+                                    CalculateHorizontalLine(myMove, opponentsMove), 
+                                    CalculateVerticalLine(myMove, opponentsMove), 
+                                    CalculateLeftDigonalLine(myMove, opponentsMove), 
+                                    CalculateRightDigonalLine(myMove, opponentsMove)
+                                 );
+
+            return new KeyValuePair<int, Move>(maximum, myMove);
+        }
+
             
+        private int CalculateVerticalLine(Move myMove, Move opponentsMove)
+        {
+            var usefulnessDegree = Game.Board.VerticalInRow(myMove).Count;
+            var sabotageDegree = Game.Board.VerticalInRow(opponentsMove).Count;
+
+            return usefulnessDegree + sabotageDegree;
         }
 
-
-
-
-
-
-
-
-
-
-        private Movement GetRandomMove(List<Cell> emptyCells)
+        private int CalculateHorizontalLine(Move myMove, Move opponentsMove)
         {
-            var cellIndex = DateTime.Now.Second % emptyCells.Count;
+            var usefulnessDegree = Game.Board.HorizontalInRow(myMove).Count;
+            var sabotageDegree = Game.Board.HorizontalInRow(opponentsMove).Count;
 
-            var cell = emptyCells[cellIndex];
-
-            return Movement.Make(cell.X, cell.Y, MyMark);
+            return usefulnessDegree + sabotageDegree;
         }
 
-        private Movement GetPreventionMove(IEnumerable<Cell> emptyCells)
+        private int CalculateLeftDigonalLine(Move myMove, Move opponentsMove)
         {
-            var victoryMoves = GetVictoryMoves(emptyCells, InvertMark(MyMark));
+            var usefulnessDegree = Game.Board.LeftDigonalInRow(myMove).Count;
+            var sabotageDegree = Game.Board.LeftDigonalInRow(opponentsMove).Count;
 
-            return victoryMoves.Any()
-                       ? Movement.Make(victoryMoves.First().X, victoryMoves.First().Y, MyMark)
-                       : null;
+            return usefulnessDegree + sabotageDegree;
         }
 
-        private Movement GetWinMove(IEnumerable<Cell> emptyCells)
+        private int CalculateRightDigonalLine(Move myMove, Move opponentsMove)
         {
-            var victoryMoves = GetVictoryMoves(emptyCells, MyMark);
+            var usefulnessDegree = Game.Board.RightDiagonalInRow(myMove).Count;
+            var sabotageDegree = Game.Board.RightDiagonalInRow(opponentsMove).Count;
 
-            return victoryMoves.Any() 
-                        ? Movement.Make(victoryMoves.First().X, victoryMoves.First().Y, MyMark) 
-                        : null;
+            return usefulnessDegree + sabotageDegree;
         }
 
-        private IList<Cell> GetVictoryMoves(IEnumerable<Cell> emptyCells, Mark mark)
+        private int Maximum(params int[] assessments)
         {
-            return emptyCells.Select(emptyCell => new 
-                                                    {
-                                                        emptyCell,
-                                                        moveResult = Game.GetMoveResult(Movement.Make(emptyCell.X, emptyCell.Y, mark))
-                                                    })
-                              .Where(@t => @t.moveResult.GameState == GameState.Victory)
-                              .Select(@t => @t.emptyCell)
-                              .ToList();
+            return assessments.Max();
         }
     }
 }

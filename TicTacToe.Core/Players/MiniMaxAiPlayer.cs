@@ -23,26 +23,18 @@ namespace TicTacToe.Core.Players
             _allowedDepth = depth;
         }
 
-        public override Movement MakeMove()
+        public override Move MakeMove()
         {
-            var movement = Game.Board.IsEmpty() ? GetRandomInitialMove() : GetMinimaxMove();
+            var move = Game.Board.IsEmpty() ? GetRandomMove() : GetMinimaxMove();
 
-            Game.Board[movement.X, movement.Y] = movement.Mark;
-            return movement;
+            Game.Board[move.X, move.Y] = move.Mark;
+            return move;
         }
 
-        private Movement GetRandomInitialMove()
-        {
-            var x = DateTime.Now.Second % Game.Settings.Width;
-            var y = DateTime.Now.Second % Game.Settings.Height;
-
-            return Movement.Make(x, y, MyMark);
-        }
-
-        private Movement GetMinimaxMove()
+        private Move GetMinimaxMove()
         {
             var maximum = int.MinValue;
-            Movement movement = null;
+            Move movement = null;
 
             foreach (var move in GetMoves(Game.Board, MyMark))
             {
@@ -58,7 +50,7 @@ namespace TicTacToe.Core.Players
             return movement;
         }
 
-        private int MiniMax(KeyValuePair<Movement, Mark[,]> move, Mark playersMark, int depth)
+        private int MiniMax(KeyValuePair<Move, Mark[,]> move, Mark playersMark, int depth)
         {
             GameState result;
             if (IsTerminal(move, depth, out result))
@@ -67,14 +59,13 @@ namespace TicTacToe.Core.Players
             }
 
             var scores = GetMoves(move.Value, playersMark)
-                        .AsParallel()
                         .Select(childMove => MiniMax(childMove, InvertMark(playersMark), depth + 1))
                         .ToList();
 
             return playersMark == MyMark ? scores.Max() : scores.Min();
         }
 
-        private bool IsTerminal(KeyValuePair<Movement, Mark[,]> move, int depth, out GameState moveResult)
+        private bool IsTerminal(KeyValuePair<Move, Mark[,]> move, int depth, out GameState moveResult)
         {
             var depthReached = depth == _allowedDepth;
 
@@ -104,7 +95,7 @@ namespace TicTacToe.Core.Players
                        : neutralAtGivingDepth;
         }
 
-        protected virtual IEnumerable<KeyValuePair<Movement, Mark[,]>> GetMoves(Mark[,] initialBoard, Mark playersMark)
+        protected virtual IEnumerable<KeyValuePair<Move, Mark[,]>> GetMoves(Mark[,] initialBoard, Mark playersMark)
         {
             for (int x = 0; x < Game.Settings.Width; x++)
             {
@@ -115,7 +106,7 @@ namespace TicTacToe.Core.Players
 
                     var newBoard = CopyBoard(initialBoard);
                     newBoard[x, y] = playersMark;
-                    yield return new KeyValuePair<Movement, Mark[,]>(Movement.Make(x, y, playersMark), newBoard);
+                    yield return new KeyValuePair<Move, Mark[,]>(Move.Make(x, y, playersMark), newBoard);
                 }
             }
         }

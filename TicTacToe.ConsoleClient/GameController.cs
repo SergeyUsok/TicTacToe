@@ -77,7 +77,7 @@ namespace TicTacToe.ConsoleClient
             }
         }
 
-        private State GetState(Game game, Movement move, State previousState, out MoveResult result)
+        private State GetState(Game game, Move move, State previousState, out MoveResult result)
         {
             if (previousState == State.Exit)
             {
@@ -100,7 +100,7 @@ namespace TicTacToe.ConsoleClient
             return State.Draw;
         }
 
-        private Movement HumanMakeMove(Game game, ref State state)
+        private Move HumanMakeMove(Game game, ref State state)
         {
             int x = -1;
             int y = -1;
@@ -124,7 +124,7 @@ namespace TicTacToe.ConsoleClient
             if(state != State.Exit)
                 game.Board[x, y] = Mark.Cross;
 
-            return new Movement(x, y, Mark.Cross);
+            return new Move(x, y, Mark.Cross);
         }
 
         private bool ParseInput(string input, Game game, out int x, out int y)

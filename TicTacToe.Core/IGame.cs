@@ -8,8 +8,8 @@ namespace TicTacToe.Core
 
         GameSettings Settings { get; }
 
-        MoveResult GetMoveResult(Movement movement);
+        MoveResult GetMoveResult(Move movement);
 
-        MoveResult GetMoveResult(Mark[,] board, Movement movement);
+        MoveResult GetMoveResult(Mark[,] board, Move movement);
     }
 }

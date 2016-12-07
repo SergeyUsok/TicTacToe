@@ -7,7 +7,7 @@ namespace TicTacToe.ViewModels.Players
     class HumanPlayerViewModel : IPlayerViewModel
     {
         private readonly Mark _playersMark;
-        private TaskCompletionSource<Movement> _tcs;
+        private TaskCompletionSource<Move> _tcs;
 
         public HumanPlayerViewModel(Mark playersMark)
         {
@@ -15,11 +15,11 @@ namespace TicTacToe.ViewModels.Players
             EventAggregator.Instance.Subscribe<TileClickedEvent>(OnTileClicked);
         }
 
-        public async Task<Movement> MakeMoveAsync(BoardViewModel board)
+        public async Task<Move> MakeMoveAsync(BoardViewModel board)
         {
             board.IsActive = true; // make board available for user's input
             
-            _tcs = new TaskCompletionSource<Movement>();
+            _tcs = new TaskCompletionSource<Move>();
             var task = await _tcs.Task;
 
             _tcs = null; // reset Task Completion Source for next move
@@ -41,7 +41,7 @@ namespace TicTacToe.ViewModels.Players
             if(_tcs == null)
                 return;
 
-            _tcs.SetResult(new Movement(@event.X, @event.Y, _playersMark));
+            _tcs.SetResult(new Move(@event.X, @event.Y, _playersMark));
         }
     }
 }

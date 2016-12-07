@@ -5,7 +5,7 @@ namespace TicTacToe.ViewModels.Players
 {
     interface IPlayerViewModel
     {
-        Task<Movement> MakeMoveAsync(BoardViewModel board);
+        Task<Move> MakeMoveAsync(BoardViewModel board);
 
         Mark MyMark { get; }
     }

@@ -14,7 +14,7 @@ namespace TicTacToe.ViewModels.Players
             _aiPlayer = aiPlayer;
         }
 
-        public async Task<Movement> MakeMoveAsync(BoardViewModel board)
+        public async Task<Move> MakeMoveAsync(BoardViewModel board)
         {
             board.IsActive = false; // make board inactive for user's input
 

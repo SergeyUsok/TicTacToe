@@ -34,7 +34,7 @@ namespace TicTacToe.Core
             return true;
         }
 
-        internal static List<Cell> CountHorizontal(this Mark[,] board, Movement movement)
+        internal static List<Cell> HorizontalInRow(this Mark[,] board, Move movement)
         {
             var inRow = new List<Cell> { new Cell(movement.X, movement.Y) };
 
@@ -59,7 +59,7 @@ namespace TicTacToe.Core
             return inRow;
         }
 
-        internal static List<Cell> CountVertical(this Mark[,] board, Movement movement)
+        internal static List<Cell> VerticalInRow(this Mark[,] board, Move movement)
         {
             var inRow = new List<Cell> { new Cell(movement.X, movement.Y) };
 
@@ -84,7 +84,7 @@ namespace TicTacToe.Core
             return inRow;
         }
 
-        internal static List<Cell> CountRightDiagonal(this Mark[,] board, Movement movement)
+        internal static List<Cell> RightDiagonalInRow(this Mark[,] board, Move movement)
         {
             var inRow = new List<Cell> { new Cell(movement.X, movement.Y) };
 
@@ -113,7 +113,7 @@ namespace TicTacToe.Core
             return inRow;
         }
 
-        internal static List<Cell> CountLeftDigonal(this Mark[,] board, Movement movement)
+        internal static List<Cell> LeftDigonalInRow(this Mark[,] board, Move movement)
         {
             var inRow = new List<Cell> { new Cell(movement.X, movement.Y) };
 

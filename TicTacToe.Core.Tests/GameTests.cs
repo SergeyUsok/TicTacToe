@@ -19,7 +19,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(2, 0, Mark.Cross));
+            var result = game.GetMoveResult(board, Move.Make(2, 0, Mark.Cross));
             
             // Assert
             Assert.AreEqual(GameState.KeepPlaying, result.GameState);
@@ -38,7 +38,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(1, 1, Mark.Cross));
+            var result = game.GetMoveResult(board, Move.Make(1, 1, Mark.Cross));
             
             // Assert
             Assert.AreEqual(GameState.Victory, result.GameState);
@@ -58,7 +58,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(2, 0, Mark.Cross));
+            var result = game.GetMoveResult(board, Move.Make(2, 0, Mark.Cross));
 
             // Assert
             Assert.AreEqual(GameState.Victory, result.GameState);
@@ -78,7 +78,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(0, 4, Mark.Cross));
+            var result = game.GetMoveResult(board, Move.Make(0, 4, Mark.Cross));
 
             // Assert
             Assert.AreEqual(GameState.KeepPlaying, result.GameState);
@@ -97,7 +97,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(0, 3, Mark.Cross));
+            var result = game.GetMoveResult(board, Move.Make(0, 3, Mark.Cross));
 
             // Assert
             Assert.AreEqual(GameState.Victory, result.GameState);
@@ -117,7 +117,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(4, 1, Mark.Cross));
+            var result = game.GetMoveResult(board, Move.Make(4, 1, Mark.Cross));
 
             // Assert
             Assert.AreEqual(GameState.KeepPlaying, result.GameState);
@@ -136,7 +136,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(2, 1, Mark.Cross));
+            var result = game.GetMoveResult(board, Move.Make(2, 1, Mark.Cross));
 
             // Assert
             Assert.AreEqual(GameState.Victory, result.GameState);
@@ -162,7 +162,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(2, 1, Mark.Nought));
+            var result = game.GetMoveResult(board, Move.Make(2, 1, Mark.Nought));
 
             // Assert
             Assert.AreEqual(GameState.Draw, result.GameState);
@@ -186,7 +186,7 @@ namespace TicTacToe.Core.Tests
             var game = new Game(new GameSettings(3, 3, 3));
 
             //  Act
-            var result = game.GetMoveResult(board, Movement.Make(2, 1, Mark.Nought));
+            var result = game.GetMoveResult(board, Move.Make(2, 1, Mark.Nought));
 
             // Assert
             Assert.AreEqual(GameState.KeepPlaying, result.GameState);

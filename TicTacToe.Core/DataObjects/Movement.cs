@@ -2,9 +2,9 @@
 
 namespace TicTacToe.Core.DataObjects
 {
-    public class Movement
+    public class Move
     {
-        public Movement(int x, int y, Mark mark)
+        public Move(int x, int y, Mark mark)
         {
             X = x;
             Y = y;
@@ -21,9 +21,9 @@ namespace TicTacToe.Core.DataObjects
 
         public Mark Mark { get; private set; }
 
-        public static Movement Make(int x, int y, Mark mark)
+        public static Move Make(int x, int y, Mark mark)
         {
-            return new Movement(x, y, mark);
+            return new Move(x, y, mark);
         }
     }
 }

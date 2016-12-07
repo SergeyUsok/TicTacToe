@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TicTacToe.Core.DataObjects;
 
 namespace TicTacToe.Core.Players
@@ -22,7 +23,7 @@ namespace TicTacToe.Core.Players
 
         public Mark MyMark { get; private set; }
 
-        public abstract Movement MakeMove();
+        public abstract Move MakeMove();
 
         protected IEnumerable<Cell> GetEmptyCells()
         {
@@ -42,6 +43,19 @@ namespace TicTacToe.Core.Players
                 return Mark.Nought;
 
             return Mark.Cross;
+        }
+
+        protected Move GetRandomMove()
+        {
+            var emptyCells = GetEmptyCells().ToList();
+
+            var cellIndex = DateTime.Now.Second % emptyCells.Count;
+
+            var cell = emptyCells[cellIndex];
+
+            var movement = Move.Make(cell.X, cell.Y, MyMark);
+
+            return movement;
         }
     }
 }

@@ -12,19 +12,13 @@ namespace TicTacToe.Core.Players
         {
         }
 
-        public override Movement MakeMove()
+        public override Move MakeMove()
         {
-            var emptyCells = GetEmptyCells().ToList();
+            var move = GetRandomMove();
 
-            var cellIndex = DateTime.Now.Second % emptyCells.Count;
+            Game.Board[move.X, move.Y] = move.Mark;
 
-            var cell = emptyCells[cellIndex];
-
-            var movement = Movement.Make(cell.X, cell.Y, MyMark);
-
-            Game.Board[movement.X, movement.Y] = movement.Mark;
-
-            return movement;
+            return move;
         }
     }
 }
