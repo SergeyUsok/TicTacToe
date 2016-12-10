@@ -25,14 +25,14 @@ namespace TicTacToe.Core.Players
 
         public abstract Move MakeMove();
 
-        protected IEnumerable<Cell> GetEmptyCells()
+        protected IEnumerable<Position> GetEmptyCells()
         {
             for (int x = 0; x < Game.Settings.Width; x++)
             {
                 for (int y = 0; y < Game.Settings.Height; y++)
                 {
                     if (Game.Board[x, y] == Mark.Empty)
-                        yield return new Cell(x, y);
+                        yield return new Position(x, y);
                 }
             }
         }

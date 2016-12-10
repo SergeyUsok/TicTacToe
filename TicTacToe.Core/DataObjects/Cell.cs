@@ -1,11 +1,11 @@
 ﻿namespace TicTacToe.Core.DataObjects
 {
-    public struct Cell
+    public struct Position
     {
         public int X { get; private set; }
         public int Y { get; private set; }
 
-        public Cell(int x, int y)
+        public Position(int x, int y)
             : this()
         {
             X = x;

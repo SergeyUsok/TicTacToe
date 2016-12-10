@@ -10,7 +10,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Returns_KeepPlaying()
         {
             // Arrange
-            var board = new Mark[3,3];
+            var board = new Board(3, 3);
             board[0, 0] = Mark.Cross;
             board[2, 1] = Mark.Cross;
             board[1, 2] = Mark.Cross;
@@ -30,7 +30,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_LeftDiagonal_Returns_Victory()
         {
             // Arrange
-            var board = new Mark[3, 3];
+            var board = new Board(3, 3);
             board[0, 0] = Mark.Cross;
             board[2, 2] = Mark.Cross;
             board[1, 1] = Mark.Cross;
@@ -50,7 +50,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_RightDiagonal_Returns_Victory()
         {
             // Arrange
-            var board = new Mark[3, 3];
+            var board = new Board(3, 3);
             board[0, 2] = Mark.Cross;
             board[1, 1] = Mark.Cross;
             board[2, 0] = Mark.Cross;
@@ -70,7 +70,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Horizontal_WinsOnlyIfInRow()
         {
             // Arrange
-            var board = new Mark[5, 5];
+            var board = new Board(3, 3);
             board[0, 1] = Mark.Cross;
             board[0, 2] = Mark.Cross;
             board[0, 4] = Mark.Cross;
@@ -89,7 +89,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Horizontal_Victory()
         {
             // Arrange
-            var board = new Mark[5, 5];
+            var board = new Board(5, 5);
             board[0, 1] = Mark.Cross;
             board[0, 2] = Mark.Cross;
             board[0, 3] = Mark.Cross;
@@ -109,7 +109,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Vertical_WinsOnlyIfInRow()
         {
             // Arrange
-            var board = new Mark[5, 5];
+            var board = new Board(5, 5);
             board[0, 1] = Mark.Cross;
             board[1, 1] = Mark.Cross;
             board[4, 1] = Mark.Cross;
@@ -128,7 +128,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Vertical_Victory()
         {
             // Arrange
-            var board = new Mark[5, 5];
+            var board = new Board(5, 5);
             board[0, 1] = Mark.Cross;
             board[1, 1] = Mark.Cross;
             board[2, 1] = Mark.Cross;
@@ -148,7 +148,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Returns_Draw()
         {
             // Arrange
-            var board = new Mark[3, 3];
+            var board = new Board(3, 3);
             board[0, 1] = Mark.Cross;
             board[1, 1] = Mark.Nought;
             board[2, 1] = Mark.Nought;
@@ -173,7 +173,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Returns_KeepPlaying_OneMoveLeft()
         {
             // Arrange
-            var board = new Mark[3, 3];
+            var board = new Board(3, 3);
             board[0, 1] = Mark.Cross;
             board[1, 1] = Mark.Nought;
             board[2, 1] = Mark.Nought;

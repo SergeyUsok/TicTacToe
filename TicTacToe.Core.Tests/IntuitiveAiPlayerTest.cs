@@ -19,12 +19,17 @@ namespace TicTacToe.Core.Tests
             var game = GetGame();
             var player = new IntuitiveAiPlayer(game, Mark.Nought);
 
-            game.Board = new Mark[,]
+            var board = new Mark[,]
                 {
                     {Mark.Nought, Mark.Empty, Mark.Cross},
                     {Mark.Empty, Mark.Cross, Mark.Empty},
                     {Mark.Empty,  Mark.Empty,  Mark.Empty}
                 };
+
+            game.Board = new Board(board);
+
+            // Arrays can have more than one dimension. For example, the following declaration creates a two-dimensional array of four rows and two columns.
+            var a = game.Board[0, 2];
 
             // Act
             var actualMove = player.MakeMove();

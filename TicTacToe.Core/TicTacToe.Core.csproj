@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Board.cs" />
     <Compile Include="DataObjects\Cell.cs" />
     <Compile Include="DataObjects\MoveResult.cs" />
     <Compile Include="BoardExtensions.cs" />

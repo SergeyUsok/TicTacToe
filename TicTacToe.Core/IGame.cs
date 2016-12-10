@@ -4,12 +4,12 @@ namespace TicTacToe.Core
 {
     public interface IGame
     {
-        Mark[,] Board { get; }
+        Board Board { get; }
 
         GameSettings Settings { get; }
 
         MoveResult GetMoveResult(Move movement);
 
-        MoveResult GetMoveResult(Mark[,] board, Move movement);
+        MoveResult GetMoveResult(Board board, Move movement);
     }
 }

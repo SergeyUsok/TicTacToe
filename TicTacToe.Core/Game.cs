@@ -12,11 +12,11 @@ namespace TicTacToe.Core
                 throw new ArgumentNullException("settings");
 
             Settings = settings;
-            Board = new Mark[settings.Width, settings.Height];
+            Board = new Board(settings.Width, settings.Height);
         }
 
         // Made internal for test purposes
-        public Mark[,] Board { get; internal set; }
+        public Board Board { get; internal set; }
 
         public GameSettings Settings { get; private set; }
 
@@ -25,11 +25,11 @@ namespace TicTacToe.Core
             return GetMoveResult(Board, movement);
         }
 
-        public MoveResult GetMoveResult(Mark[,] board, Move movement)
+        public MoveResult GetMoveResult(Board board, Move movement)
         {
             var moveResult = new MoveResult {Mark = movement.Mark};
 
-            List<Cell> row = null;
+            List<Position> row = null;
             
             var state = CheckForVictory(board, movement, out row)
                        ? GameState.Victory
@@ -43,13 +43,13 @@ namespace TicTacToe.Core
             return moveResult;
         }
 
-        private static bool CheckForDraw(Mark[,] board)
+        private static bool CheckForDraw(Board board)
         {
-            for (int i = 0; i < board.GetLength(0); i++)
+            for(int x = 0; x < board.Width; x++)
             {
-                for (int j = 0; j < board.GetLength(1); j++)
+                for(int y = 0; y < board.Height; y++)
                 {
-                    if (board[i, j] == Mark.Empty)
+                    if (board[x, y] == Mark.Empty)
                         return false;
                 }
             }
@@ -57,7 +57,7 @@ namespace TicTacToe.Core
             return true;
         }
 
-        private bool CheckForVictory(Mark[,] board, Move movement, out List<Cell> row)
+        private bool CheckForVictory(Board board, Move movement, out List<Position> row)
         {
             row = CheckHorizontal(board, movement) ??
                    CheckVertical(board, movement) ??
@@ -67,36 +67,36 @@ namespace TicTacToe.Core
             return row != null;
         }
 
-        private List<Cell> CheckHorizontal(Mark[,] board, Move movement)
+        private List<Position> CheckHorizontal(Board board, Move movement)
         {
             var winRow = board.HorizontalInRow(movement);
             
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
 
-        private List<Cell> CheckVertical(Mark[,] board, Move movement)
+        private List<Position> CheckVertical(Board board, Move movement)
         {
             var winRow = board.VerticalInRow(movement);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
 
-        // Check whether right digonal is filled. Example:
+        // Check whether right diagonal is filled. Example:
         //   0 x
         // 0 x 
         // x 0 
-        private List<Cell> CheckRightDiagonal(Mark[,] board, Move movement)
+        private List<Position> CheckRightDiagonal(Board board, Move movement)
         {
             var winRow = board.RightDiagonalInRow(movement);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
 
-        // Check whether left digonal is filled. Example:
+        // Check whether left diagonal is filled. Example:
         // x 0
         // 0 x 
         //   0 x
-        private List<Cell> CheckLeftDigonal(Mark[,] board, Move movement)
+        private List<Position> CheckLeftDigonal(Board board, Move movement)
         {
             var winRow = board.LeftDigonalInRow(movement);
 

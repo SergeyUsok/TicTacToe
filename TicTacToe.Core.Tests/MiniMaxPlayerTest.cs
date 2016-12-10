@@ -15,12 +15,14 @@ namespace TicTacToe.Core.Tests
             var game = GetGame();
             var player = new MiniMaxAiPlayer(game, Mark.Nought, depth);
 
-            game.Board = new Mark[,]
+            var board = new Mark[,]
                 {
                     {Mark.Empty, Mark.Cross, Mark.Empty},
                     {Mark.Empty, Mark.Empty, Mark.Cross},
                     {Mark.Nought,  Mark.Nought,  Mark.Cross}
                 };
+
+            game.Board = new Board(board);
 
             // Act
             var actualMove = player.MakeMove();
@@ -37,12 +39,14 @@ namespace TicTacToe.Core.Tests
             var game = GetGame();
             var player = new MiniMaxAiPlayer(game, Mark.Nought, depth);
 
-            game.Board = new Mark[,]
+            var board = new Mark[,]
                 {
                     {Mark.Empty, Mark.Cross, Mark.Empty},
                     {Mark.Empty, Mark.Empty, Mark.Cross},
                     {Mark.Nought,  Mark.Nought,  Mark.Empty}
                 };
+
+            game.Board = new Board(board);
 
             // Act
             var actualMove = player.MakeMove();
@@ -59,12 +63,14 @@ namespace TicTacToe.Core.Tests
             var game = GetGame();
             var player = new MiniMaxAiPlayer(game, Mark.Nought, depth);
 
-            game.Board = new Mark[,]
+            var board = new Mark[,]
                 {
                     {Mark.Nought, Mark.Empty, Mark.Cross}, // will choose [0,1] because any move
                     {Mark.Empty, Mark.Cross, Mark.Cross}, // leads to lost
                     {Mark.Empty,  Mark.Nought,  Mark.Empty} 
                 };
+
+            game.Board = new Board(board);
 
             // Act
             var actualMove = player.MakeMove();

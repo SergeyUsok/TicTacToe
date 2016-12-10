@@ -77,3 +77,11 @@ TicTacToe.ConsoleClient/bin/Debug/TicTacToe.ConsoleClient.vshost.exe.manifest
 TicTacToe.Core.Tests/bin/Debug/nunit.framework.xml
 packages/NUnit.3.2.1/NOTICES.txt
 TicTacToe.v11.suo
+/TicTacToe.Core/bin/Debug
+/TicTacToe.Core/obj/Debug
+/TicTacToe.Core.Tests/bin/Debug
+/TicTacToe.Core.Tests/obj/Debug
+/TicTacToe.WpfClient/bin/Debug
+/TicTacToe.WpfClient/obj/Debug
+/TicTacToe.ConsoleClient/bin/Debug
+/TicTacToe.ConsoleClient/obj/Debug

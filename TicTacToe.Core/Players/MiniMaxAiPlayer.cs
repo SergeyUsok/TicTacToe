@@ -25,7 +25,7 @@ namespace TicTacToe.Core.Players
 
         public override Move MakeMove()
         {
-            var move = Game.Board.IsEmpty() ? GetRandomMove() : GetMinimaxMove();
+            var move = Game.Board.IsEmpty ? GetRandomMove() : GetMinimaxMove();
 
             Game.Board[move.X, move.Y] = move.Mark;
             return move;
@@ -50,7 +50,7 @@ namespace TicTacToe.Core.Players
             return movement;
         }
 
-        private int MiniMax(KeyValuePair<Move, Mark[,]> move, Mark playersMark, int depth)
+        private int MiniMax(KeyValuePair<Move, Board> move, Mark playersMark, int depth)
         {
             GameState result;
             if (IsTerminal(move, depth, out result))
@@ -65,7 +65,7 @@ namespace TicTacToe.Core.Players
             return playersMark == MyMark ? scores.Max() : scores.Min();
         }
 
-        private bool IsTerminal(KeyValuePair<Move, Mark[,]> move, int depth, out GameState moveResult)
+        private bool IsTerminal(KeyValuePair<Move, Board> move, int depth, out GameState moveResult)
         {
             var depthReached = depth == _allowedDepth;
 
@@ -79,7 +79,7 @@ namespace TicTacToe.Core.Players
         // Algorithm assess each move by giving Max to win move, 
         // Min to lost move and 0 to Draw or non-finished game
         // Algorithm also takes into account current considered Depth
-        // Therefore Copmuter tries to finish game as fast as possible
+        // Therefore Computer tries to finish game as fast as possible
         // and loose as later as possible
         // example: http://neverstopbuilding.com/minimax
         protected virtual int AssessMove(GameState moveResult, Mark playersMark, int depth)
@@ -95,7 +95,7 @@ namespace TicTacToe.Core.Players
                        : neutralAtGivingDepth;
         }
 
-        protected virtual IEnumerable<KeyValuePair<Move, Mark[,]>> GetMoves(Mark[,] initialBoard, Mark playersMark)
+        protected virtual IEnumerable<KeyValuePair<Move, Board>> GetMoves(Board initialBoard, Mark playersMark)
         {
             for (int x = 0; x < Game.Settings.Width; x++)
             {
@@ -106,23 +106,23 @@ namespace TicTacToe.Core.Players
 
                     var newBoard = CopyBoard(initialBoard);
                     newBoard[x, y] = playersMark;
-                    yield return new KeyValuePair<Move, Mark[,]>(Move.Make(x, y, playersMark), newBoard);
+                    yield return new KeyValuePair<Move, Board>(Move.Make(x, y, playersMark), newBoard);
                 }
             }
         }
 
-        protected virtual bool CanBeProcessed(int x, int y, Mark[,] board)
+        protected virtual bool CanBeProcessed(int x, int y, Board board)
         {
             return board[x, y] == Mark.Empty;
         }
 
-        private Mark[,] CopyBoard(Mark[,] sourceBoard)
+        private Board CopyBoard(Board sourceBoard)
         {
-            var newBoard = new Mark[Game.Settings.Width, Game.Settings.Height];
+            var newBoard = new Board(Game.Settings.Width, Game.Settings.Height);
 
-            for (int x = 0; x < sourceBoard.GetLength(0); x++)
+            for (int x = 0; x < sourceBoard.Width; x++)
             {
-                for (int y = 0; y < sourceBoard.GetLength(1); y++)
+                for (int y = 0; y < sourceBoard.Height; y++)
                 {
                     newBoard[x, y] = sourceBoard[x, y];
                 }

@@ -1,30 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TicTacToe.Core;
 using TicTacToe.Core.DataObjects;
 
 namespace TicTacToe.ViewModels
 {
     class BoardViewModel : ViewModelBase
     {
-        private readonly Mark[,] _board;
+        private readonly Board _board;
         private IList<TileViewModel> _tiles;
         private bool _isActive;
 
-        public BoardViewModel(Mark[,] board)
+        public BoardViewModel(Board board)
         {
             _board = board;
             Tiles = GetTiles(board);
-            Rows = board.GetLength(0);
-            Columns = board.GetLength(1);
+            Rows = board.Height;
+            Columns = board.Width;
         }
 
-        private IList<TileViewModel> GetTiles(Mark[,] board)
+        private IList<TileViewModel> GetTiles(Board board)
         {
             var boardView = new List<TileViewModel>();
 
-            for (int x = 0; x < board.GetLength(0); x++)
+            for (int x = 0; x < board.Width; x++)
             {
-                for (int y = 0; y < board.GetLength(1); y++)
+                for (int y = 0; y < board.Height; y++)
                 {
                     boardView.Add(new TileViewModel(x, y));
                 }
@@ -66,7 +67,7 @@ namespace TicTacToe.ViewModels
             tile.Value = mark;
         }
 
-        public void HighlightWinRow(List<Cell> winRow)
+        public void HighlightWinRow(List<Position> winRow)
         {
             winRow.ForEach(cell => Tiles.Single(t => t.X == cell.X && t.Y == cell.Y)
                                         .IsWinTile = true);

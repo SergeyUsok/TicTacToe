@@ -15,14 +15,14 @@ namespace TicTacToe.Core.Players
         {
         }
 
-        protected override bool CanBeProcessed(int x, int y, Mark[,] board)
+        protected override bool CanBeProcessed(int x, int y, Board board)
         {
             var isEmpty = base.CanBeProcessed(x, y, board);
 
             return isEmpty && HasMarkedNeighbors(x, y, board);
         }
 
-        private bool HasMarkedNeighbors(int x, int y, Mark[,] board)
+        private bool HasMarkedNeighbors(int x, int y, Board board)
         {
             for (int xAccretion = -1; xAccretion < 2; xAccretion++)
             {
