@@ -38,13 +38,13 @@
                                                     </MultiDataTrigger.Setters>
                                                 </MultiDataTrigger>
                                                 <DataTrigger Binding="{Binding MarkView}" Value="{x:Static local:ResourcesHolder.Nought}">
-                                                    <Setter Property="TextBlock.Foreground" Value="Indigo"></Setter>
+                                                    <Setter Property="TextBlock.Foreground" Value="Indigo" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding MarkView}" Value="{x:Static local:ResourcesHolder.Cross}">
-                                                    <Setter Property="Foreground" Value="ForestGreen"></Setter>
+                                                    <Setter Property="TextBlock.Foreground" Value="ForestGreen" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsWinTile}" Value="true">
-                                                    <Setter Property="Panel.Background" TargetName="border" Value="LightCyan"></Setter>
+                                                    <Setter Property="Panel.Background" TargetName="border" Value="LightCyan" />
                                                 </DataTrigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>

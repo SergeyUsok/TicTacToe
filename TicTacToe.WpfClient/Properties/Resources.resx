@@ -157,6 +157,6 @@
     <value>⨯</value>
   </data>
   <data name="Nought" xml:space="preserve">
-    <value>⃝</value>
+    <value>&#x25cb;</value>
   </data>
 </root>

@@ -69,14 +69,14 @@ namespace TicTacToe.Core
 
         private List<Position> CheckHorizontal(Board board, Move movement)
         {
-            var winRow = board.HorizontalInRow(movement);
+            var winRow = board.HorizontalInRow(movement, currentMark => currentMark == movement.Mark);
             
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
 
         private List<Position> CheckVertical(Board board, Move movement)
         {
-            var winRow = board.VerticalInRow(movement);
+            var winRow = board.VerticalInRow(movement, currentMark => currentMark == movement.Mark);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
@@ -87,7 +87,7 @@ namespace TicTacToe.Core
         // x 0 
         private List<Position> CheckRightDiagonal(Board board, Move movement)
         {
-            var winRow = board.RightDiagonalInRow(movement);
+            var winRow = board.RightDiagonalInRow(movement, currentMark => currentMark == movement.Mark);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }
@@ -98,7 +98,7 @@ namespace TicTacToe.Core
         //   0 x
         private List<Position> CheckLeftDigonal(Board board, Move movement)
         {
-            var winRow = board.LeftDigonalInRow(movement);
+            var winRow = board.LeftDigonalInRow(movement, currentMark => currentMark == movement.Mark);
 
             return winRow.Count == Settings.NumberInRowToWin ? winRow : null;
         }

@@ -17,14 +17,14 @@ namespace TicTacToe.Core
                    y < board.Height;
         }
 
-        internal static List<Position> HorizontalInRow(this Board board, Move movement)
+        internal static List<Position> HorizontalInRow(this Board board, Move movement, Func<Mark, bool> predicate)
         {
             var inRow = new List<Position> { new Position(movement.X, movement.Y) };
 
             // traverse to right from current point
             var nextX = movement.X + 1;
-
-            while (board.WithinBounds(nextX, movement.Y) && board[nextX, movement.Y] == movement.Mark)
+            //board[nextX, movement.Y] == movement.Mark
+            while (board.WithinBounds(nextX, movement.Y) && predicate(board[nextX, movement.Y]))
             {
                 inRow.Add(new Position(nextX, movement.Y));
                 nextX = nextX + 1;
@@ -32,8 +32,8 @@ namespace TicTacToe.Core
 
             // traverse to left from current point
             nextX = movement.X - 1;
-
-            while (board.WithinBounds(nextX, movement.Y) && board[nextX, movement.Y] == movement.Mark)
+            //board[nextX, movement.Y] == movement.Mark
+            while (board.WithinBounds(nextX, movement.Y) && predicate(board[nextX, movement.Y]))
             {
                 inRow.Add(new Position(nextX, movement.Y));
                 nextX = nextX - 1;
@@ -42,14 +42,14 @@ namespace TicTacToe.Core
             return inRow;
         }
 
-        internal static List<Position> VerticalInRow(this Board board, Move movement)
+        internal static List<Position> VerticalInRow(this Board board, Move movement, Func<Mark, bool> predicate)
         {
             var inRow = new List<Position> { new Position(movement.X, movement.Y) };
 
             // traverse up from current point
             var nextY = movement.Y - 1;
-
-            while (board.WithinBounds(movement.X, nextY) && board[movement.X, nextY] == movement.Mark)
+            //board[movement.X, nextY] == movement.Mark
+            while (board.WithinBounds(movement.X, nextY) && predicate(board[movement.X, nextY]))
             {
                 inRow.Add(new Position(movement.X, nextY));
                 nextY = nextY - 1;
@@ -57,8 +57,8 @@ namespace TicTacToe.Core
 
             // traverse down from current point
             nextY = movement.Y + 1;
-
-            while (board.WithinBounds(movement.X, nextY) && board[movement.X, nextY] == movement.Mark)
+            //board[movement.X, nextY] == movement.Mark
+            while (board.WithinBounds(movement.X, nextY) && predicate(board[movement.X, nextY]))
             {
                 inRow.Add(new Position(movement.X, nextY));
                 nextY = nextY + 1;
@@ -67,15 +67,15 @@ namespace TicTacToe.Core
             return inRow;
         }
 
-        internal static List<Position> RightDiagonalInRow(this Board board, Move movement)
+        internal static List<Position> RightDiagonalInRow(this Board board, Move movement, Func<Mark, bool> predicate)
         {
             var inRow = new List<Position> { new Position(movement.X, movement.Y) };
 
             // traverse down-left from current point
             var nextX = movement.X - 1;
             var nextY = movement.Y + 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            //board[nextX, nextY] == movement.Mark
+            while (board.WithinBounds(nextX, nextY) && predicate(board[nextX, nextY]))
             {
                 inRow.Add(new Position(nextX, nextY));
                 nextX = nextX - 1;
@@ -85,8 +85,8 @@ namespace TicTacToe.Core
             // traverse up-right from current point
             nextX = movement.X + 1;
             nextY = movement.Y - 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            //board[nextX, nextY] == movement.Mark
+            while (board.WithinBounds(nextX, nextY) && predicate(board[nextX, nextY]))
             {
                 inRow.Add(new Position(nextX, nextY));
                 nextX = nextX + 1;
@@ -96,15 +96,15 @@ namespace TicTacToe.Core
             return inRow;
         }
 
-        internal static List<Position> LeftDigonalInRow(this Board board, Move movement)
+        internal static List<Position> LeftDigonalInRow(this Board board, Move movement, Func<Mark, bool> predicate)
         {
             var inRow = new List<Position> { new Position(movement.X, movement.Y) };
 
             // traverse up-left from current point
             var nextX = movement.X - 1;
             var nextY = movement.Y - 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            //board[nextX, nextY] == movement.Mark
+            while (board.WithinBounds(nextX, nextY) && predicate(board[nextX, nextY]))
             {
                 inRow.Add(new Position(nextX, nextY));
                 nextX = nextX - 1;
@@ -114,8 +114,8 @@ namespace TicTacToe.Core
             // traverse down-right from current point
             nextX = movement.X + 1;
             nextY = movement.Y + 1;
-
-            while (board.WithinBounds(nextX, nextY) && board[nextX, nextY] == movement.Mark)
+            //board[nextX, nextY] == movement.Mark
+            while (board.WithinBounds(nextX, nextY) && predicate(board[nextX, nextY]))
             {
                 inRow.Add(new Position(nextX, nextY));
                 nextX = nextX + 1;

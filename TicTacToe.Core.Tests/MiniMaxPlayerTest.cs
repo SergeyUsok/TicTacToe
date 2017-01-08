@@ -28,7 +28,7 @@ namespace TicTacToe.Core.Tests
             var actualMove = player.MakeMove();
 
             // Assert
-            Assert.IsTrue(actualMove.X == 0 && actualMove.Y == 2);
+            Assert.IsTrue(actualMove.X == 2 && actualMove.Y == 0);
         }
 
         [Test]

@@ -36,21 +36,26 @@ namespace TicTacToe.Core.Players
             var maximum = int.MinValue;
             Move movement = null;
 
+            // used for alpha-beta pruning 
+            // https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+            var alpha = int.MinValue;
+            var beta = int.MaxValue;
+
             foreach (var move in GetMoves(Game.Board, MyMark))
             {
-                var score = MiniMax(move, InvertMark(MyMark), 1);
+                var moveScore = MiniMax(move, InvertMark(MyMark), alpha, beta, 1);
 
-                if (score <= maximum)
+                if (moveScore <= maximum)
                     continue;
 
-                maximum = score;
+                maximum = moveScore;
                 movement = move.Key;
             }
 
             return movement;
         }
 
-        private int MiniMax(KeyValuePair<Move, Board> move, Mark playersMark, int depth)
+        private int MiniMax(KeyValuePair<Move, Board> move, Mark playersMark, int alpha, int beta, int depth)
         {
             GameState result;
             if (IsTerminal(move, depth, out result))
@@ -58,11 +63,40 @@ namespace TicTacToe.Core.Players
                 return AssessMove(result, move.Key.Mark, depth);
             }
 
-            var scores = GetMoves(move.Value, playersMark)
-                        .Select(childMove => MiniMax(childMove, InvertMark(playersMark), depth + 1))
-                        .ToList();
+            int resultantScore = 0;
 
-            return playersMark == MyMark ? scores.Max() : scores.Min();
+            foreach (var possibleMove in GetMoves(move.Value, playersMark))
+            {
+                var score = MiniMax(possibleMove, InvertMark(playersMark), alpha, beta, depth + 1);
+
+                resultantScore = playersMark == MyMark ? Maximize(resultantScore, score, ref alpha)
+                                                       : Minimize(resultantScore, score, ref beta);
+
+                if (beta <= alpha) // alpha-beta pruning
+                    break;
+            }
+
+            return resultantScore;
+        }
+
+        private int Maximize(int maybeMaximum, int currentScore, ref int alpha)
+        {
+            if (maybeMaximum < currentScore)
+                maybeMaximum = currentScore;
+
+            alpha = Math.Max(alpha, maybeMaximum);
+
+            return maybeMaximum;
+        }
+
+        private int Minimize(int maybeMinimum, int currentScore, ref int beta)
+        {
+            if (maybeMinimum > currentScore)
+                maybeMinimum = currentScore;
+
+            beta = Math.Min(beta, maybeMinimum);
+
+            return maybeMinimum;
         }
 
         private bool IsTerminal(KeyValuePair<Move, Board> move, int depth, out GameState moveResult)

@@ -70,7 +70,7 @@ namespace TicTacToe.Core.Tests
         public void GetMoveResult_Horizontal_WinsOnlyIfInRow()
         {
             // Arrange
-            var board = new Board(3, 3);
+            var board = new Board(5, 5);
             board[0, 1] = Mark.Cross;
             board[0, 2] = Mark.Cross;
             board[0, 4] = Mark.Cross;

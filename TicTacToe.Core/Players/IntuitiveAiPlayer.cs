@@ -15,7 +15,7 @@ namespace TicTacToe.Core.Players
         // simulating Human behavior when one makes decision how to move
         public override Move MakeMove()
         {
-            var move = Game.Board.IsEmpty ? GetRandomMove() 
+            var move = Game.Board.IsEmpty ? GetRandomMove()
                                           : GetEmptyCells().Select(cell => AssessMove(cell))
                                                            .Aggregate((max, next) => max.Key >= next.Key ? max : next) // since there is no out-of-box method MaxBy use Aggregate then
                                                            .Value;
@@ -24,62 +24,82 @@ namespace TicTacToe.Core.Players
             return move;
         }
 
-        // Calculate degree of usefulness for player and degree of sabotage for opponent player
-        // the bigger number of cells in row then bigger degree of usefulness
-        // the bigger number of cells in row we destroy for opponent then bigger degree of sabotage
-        private KeyValuePair<int, Move> AssessMove(Position cell)
+        // By calculating the profit of move we solve following:
+        // 1. How big usefulness of this move for me?
+        // 2. How big will be damage to opponent if I put Mark there and sabotage opponent's move?
+        private KeyValuePair<double, Move> AssessMove(Position cell)
         {
             var myMove = Move.Make(cell.X, cell.Y, MyMark);
             var opponentsMove = Move.Make(cell.X, cell.Y, InvertMark(MyMark));
 
-            // calculate usefulness and sabotage by pairs for each direction (vertical. horizontal etc.) 
-            // and get pair with maximum sum
-            var maximum = Maximum(
-                                    CalculateHorizontalLine(myMove, opponentsMove), 
-                                    CalculateVerticalLine(myMove, opponentsMove), 
-                                    CalculateLeftDigonalLine(myMove, opponentsMove), 
-                                    CalculateRightDigonalLine(myMove, opponentsMove)
+            // my move coefficient is greater than opponents one in order to prioritize them
+            // collect greater moves in row has more priority than sabotage opponents collection
+            const double myMoveCoefficient = 1.1;
+            const double opponentsMoveCoefficient = 1.0;
+
+            var myProfit = CalculateMoveProfit(myMove, myMoveCoefficient);
+            var opponentsProfit = CalculateMoveProfit(opponentsMove, opponentsMoveCoefficient);
+
+            var totalSum = myProfit + opponentsProfit;
+
+            return new KeyValuePair<double, Move>(totalSum, myMove);
+        }
+
+        // Calculate profit of move by getting maximum number of Marks in row
+        // and applying this result to NumberInRowToWin setting
+        private double CalculateMoveProfit(Move move, double playerCoefficient)
+        {
+            var moveAssessment = Summarize(
+                                    HorizontalLine(move),
+                                    VerticalLine(move),
+                                    LeftDigonalLine(move),
+                                    RightDigonalLine(move)
                                  );
 
-            return new KeyValuePair<int, Move>(maximum, myMove);
+            return moveAssessment * playerCoefficient;
         }
 
-            
-        private int CalculateVerticalLine(Move myMove, Move opponentsMove)
+        private List<Position> VerticalLine(Move move)
         {
-            var usefulnessDegree = Game.Board.VerticalInRow(myMove).Count;
-            var sabotageDegree = Game.Board.VerticalInRow(opponentsMove).Count;
-
-            return usefulnessDegree + sabotageDegree;
+            return Game.Board.VerticalInRow(move, currentMark => currentMark == move.Mark || currentMark == Mark.Empty);
         }
 
-        private int CalculateHorizontalLine(Move myMove, Move opponentsMove)
+        private List<Position> HorizontalLine(Move move)
         {
-            var usefulnessDegree = Game.Board.HorizontalInRow(myMove).Count;
-            var sabotageDegree = Game.Board.HorizontalInRow(opponentsMove).Count;
-
-            return usefulnessDegree + sabotageDegree;
+            return Game.Board.HorizontalInRow(move, currentMark => currentMark == move.Mark || currentMark == Mark.Empty);
         }
 
-        private int CalculateLeftDigonalLine(Move myMove, Move opponentsMove)
+        private List<Position> LeftDigonalLine(Move move)
         {
-            var usefulnessDegree = Game.Board.LeftDigonalInRow(myMove).Count;
-            var sabotageDegree = Game.Board.LeftDigonalInRow(opponentsMove).Count;
-
-            return usefulnessDegree + sabotageDegree;
+            return Game.Board.LeftDigonalInRow(move, currentMark => currentMark == move.Mark || currentMark == Mark.Empty);
         }
 
-        private int CalculateRightDigonalLine(Move myMove, Move opponentsMove)
+        private List<Position> RightDigonalLine(Move move)
         {
-            var usefulnessDegree = Game.Board.RightDiagonalInRow(myMove).Count;
-            var sabotageDegree = Game.Board.RightDiagonalInRow(opponentsMove).Count;
-
-            return usefulnessDegree + sabotageDegree;
+            return Game.Board.RightDiagonalInRow(move, currentMark => currentMark == move.Mark || currentMark == Mark.Empty);
         }
 
-        private int Maximum(params int[] assessments)
+        private double Calculate(List<Position> positions)
         {
-            return assessments.Max();
+            // no sense to calculate if given direction cannot lead to victory due to lack of available cells
+            if (positions.Count < Game.Settings.NumberInRowToWin)
+                return 0;
+
+            var realMoves = positions.Count(p => Game.Board[p.X, p.Y] != Mark.Empty);
+            var potentialMoves = positions.Count(p => Game.Board[p.X, p.Y] == Mark.Empty);
+
+            // obtain coefficient for multiplication on number of real (filled) moves
+            // smaller number of potential moves (and greater number of real ones) greater coefficient and result
+            var coefficient = Game.Settings.NumberInRowToWin / potentialMoves;
+
+            // Sum of real moves, e.g. if count of real moves will be 3 then sum is: 1+2+3
+            // multiply sum on calculated coefficient
+            return Enumerable.Range(1, realMoves).Sum() * coefficient;
+        }
+        
+        private double Summarize(params List<Position>[] inRowInEachDirection)
+        {
+            return inRowInEachDirection.Sum(positions => Calculate(positions));
         }
     }
 }

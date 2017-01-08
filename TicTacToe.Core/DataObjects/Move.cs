@@ -25,5 +25,10 @@ namespace TicTacToe.Core.DataObjects
         {
             return new Move(x, y, mark);
         }
+
+        public override string ToString()
+        {
+            return $"Mark: {Mark}; X: {X}, Y: {Y}";
+        }
     }
 }

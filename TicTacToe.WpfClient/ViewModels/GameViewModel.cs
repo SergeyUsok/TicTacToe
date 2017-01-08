@@ -9,11 +9,11 @@ using TicTacToe.ViewModels.Players;
 
 namespace TicTacToe.ViewModels
 {
-    // TODO: 4. EventTrigger for animation
-    // TODO: 9. Add styles
-	// TODO: Alpha-beta cutoff
-    // TODO: add another AI
+    // TODO: EventTrigger for animation
+    // TODO: Add styles
+    // TODO: Intuitive AI stupid on a big board (like 10*10)
     // TODO: highlight moves by clicking on moves history
+    // TODO: Bug with OutOfRangeException
     class GameViewModel : ViewModelBase
     {
         private readonly IGame _game;
