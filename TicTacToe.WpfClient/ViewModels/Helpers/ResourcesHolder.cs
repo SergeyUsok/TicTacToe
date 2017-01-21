@@ -35,7 +35,8 @@ namespace TicTacToe.ViewModels.Helpers
                             Resources.HumanPlayer,
                             Resources.MinimaxPlayer,
                             Resources.OptimizedMinimaxPlayer,
-                            Resources.IntuitiveAI,
+                            Resources.HumanLikeAI,
+                            Resources.ForkableAI,
                             Resources.DummyAI
                         }.AsReadOnly();
 

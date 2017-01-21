@@ -49,7 +49,7 @@ namespace TicTacToe.Core.Players
         {
             var emptyCells = GetEmptyCells().ToList();
 
-            var cellIndex = DateTime.Now.Second % emptyCells.Count;
+            var cellIndex = (int)(DateTime.Now.ToOADate() * DateTime.Now.Millisecond) % emptyCells.Count;
 
             var cell = emptyCells[cellIndex];
 

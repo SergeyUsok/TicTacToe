@@ -11,14 +11,13 @@ namespace TicTacToe.ViewModels
 {
     // TODO: EventTrigger for animation
     // TODO: Add styles
-    // TODO: Intuitive AI stupid on a big board (like 10*10)
     // TODO: highlight moves by clicking on moves history
-    // TODO: Bug with OutOfRangeException
-    class GameViewModel : ViewModelBase
+    class GameViewModel : ViewModelBase, IDisposable
     {
         private readonly IGame _game;
-        private readonly RoundRobinIterator<IPlayerViewModel> _playersIterator;
-        
+        private readonly IPlayerViewModel _playerX;
+        private readonly IPlayerViewModel _player0;
+
         public GameViewModel([NotNull] IGame game, [NotNull] IPlayerViewModel playerX,
                              [NotNull] IPlayerViewModel player0)
         {
@@ -32,23 +31,25 @@ namespace TicTacToe.ViewModels
                 throw new ArgumentNullException("player0");
 
             _game = game;
+            _playerX = playerX;
+            _player0 = player0;
 
             Board = new BoardViewModel(game.Board);
             Timer = new TimerViewModel();
             MessagesStack = new ObservableCollection<string>();
-
-            _playersIterator = new RoundRobinIterator<IPlayerViewModel>(playerX, player0);
         }
 
         public async Task StartGameLoopAsync()
         {
             Timer.Start();
 
+            var playersIterator = new RoundRobinIterator<IPlayerViewModel>(_playerX, _player0);
+
             MoveResult moveResult;
 
             do
             {
-                var nextPlayer = _playersIterator.Next();
+                var nextPlayer = playersIterator.Next();
 
                 MessagesStack.Push(ResourcesHolder.GetTurnMessage(nextPlayer.MyMark));
 
@@ -86,6 +87,12 @@ namespace TicTacToe.ViewModels
                 MessagesStack.Push(ResourcesHolder.GetWinMessage(moveResult.Mark));
                 Board.HighlightWinRow(moveResult.WinRow);
             }
+        }
+
+        public void Dispose()
+        {
+            _playerX.CleanUp();
+            _player0.CleanUp();
         }
     }
 }

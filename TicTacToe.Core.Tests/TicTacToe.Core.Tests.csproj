@@ -43,9 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtensionsTest.cs" />
+    <Compile Include="BoardTests.cs" />
+    <Compile Include="BoardExtensionsTest.cs" />
     <Compile Include="GameTests.cs" />
-    <Compile Include="IntuitiveAiPlayerTest.cs" />
+    <Compile Include="ForkableAiPlayerTest.cs" />
+    <Compile Include="HumanLikeAiPlayerTests.cs" />
     <Compile Include="RoundRobinIteratorTests.cs" />
     <Compile Include="MiniMaxPlayerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

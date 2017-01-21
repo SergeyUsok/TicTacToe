@@ -135,8 +135,8 @@
   <data name="HumanPlayer" xml:space="preserve">
     <value>Human</value>
   </data>
-  <data name="IntuitiveAI" xml:space="preserve">
-    <value>Intuitive AI</value>
+  <data name="HumanLikeAI" xml:space="preserve">
+    <value>Human like AI</value>
   </data>
   <data name="MinimaxPlayer" xml:space="preserve">
     <value>Minimax AI</value>
@@ -157,6 +157,9 @@
     <value>⨯</value>
   </data>
   <data name="Nought" xml:space="preserve">
-    <value>&#x25cb;</value>
+    <value>○</value>
+  </data>
+  <data name="ForkableAI" xml:space="preserve">
+    <value>Forkable AI</value>
   </data>
 </root>

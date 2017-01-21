@@ -5,14 +5,14 @@ using TicTacToe.Core.Players;
 namespace TicTacToe.Core.Tests
 {
     [TestFixture]
-    public class IntuitiveAiPlayerTest
+    public class ForkableAiPlayerTest
     {
         [Test]
         public void MakeMove_Should_Block_Opponents_Victory()
         {
             // Arrange
             var game = GetGame();
-            var player = new IntuitiveAiPlayer(game, Mark.Nought);
+            var player = new ForkableAiPlayer(game, Mark.Nought);
 
             var board = new Mark[,]
                 {
@@ -35,7 +35,7 @@ namespace TicTacToe.Core.Tests
         {
             // Arrange
             var game = GetGame();
-            var player = new IntuitiveAiPlayer(game, Mark.Nought);
+            var player = new ForkableAiPlayer(game, Mark.Nought);
 
             var board = new Mark[,]
                 {
@@ -58,7 +58,7 @@ namespace TicTacToe.Core.Tests
         {
             // Arrange
             var game = GetGame(4, 4, 4);
-            var player = new IntuitiveAiPlayer(game, Mark.Nought);
+            var player = new ForkableAiPlayer(game, Mark.Nought);
 
             var board = new Mark[,]
                 {
@@ -82,7 +82,7 @@ namespace TicTacToe.Core.Tests
         {
             // Arrange
             var game = GetGame(4, 4, 4);
-            var player = new IntuitiveAiPlayer(game, Mark.Cross);
+            var player = new ForkableAiPlayer(game, Mark.Cross);
 
             var board = new Mark[,]
                 {
@@ -102,15 +102,41 @@ namespace TicTacToe.Core.Tests
         }
 
         [Test]
-        public void MakeMove_Big_Board_Should_Block_Opponents_Move()
+        public void MakeMove_Big_Board_Seek_Way_To_Win()
         {
             // Arrange
             var game = GetGame(6, 6, 4);
-            var player = new IntuitiveAiPlayer(game, Mark.Nought);
+            var player = new ForkableAiPlayer(game, Mark.Nought);
 
             var board = new Mark[,]
                 {
                     {Mark.Nought, Mark.Nought, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Cross, Mark.Cross, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty}
+                };
+
+            game.Board = new Board(board);
+
+            // Act
+            var actualMove = player.MakeMove();
+
+            // Assert
+            Assert.IsTrue(actualMove.X == 2 && actualMove.Y == 0);
+        }
+
+        [Test]
+        public void MakeMove_Big_Board_Should_Block_Opponents_Move()
+        {
+            // Arrange
+            var game = GetGame(6, 6, 4);
+            var player = new ForkableAiPlayer(game, Mark.Nought);
+
+            var board = new Mark[,]
+                {
+                    {Mark.Nought, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
                     {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
                     {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
                     {Mark.Empty, Mark.Empty, Mark.Cross, Mark.Cross, Mark.Empty, Mark.Empty},

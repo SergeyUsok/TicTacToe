@@ -79,9 +79,37 @@ namespace TicTacToe.Core.Tests
             Assert.IsTrue(actualMove.X == 0 && actualMove.Y == 1);
         }
 
-        private Game GetGame()
+        [Test]
+        public void MakeMove_Big_Board_Makes_Stupid_Decision()
         {
-            return new Game(new GameSettings(3, 3, 3));
+            // Arrange
+            var game = GetGame(6, 6, 4);
+            var player = new MiniMaxAiPlayer(game, Mark.Nought, 5);
+
+            var board = new Mark[,]
+                {
+                    {Mark.Nought, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Cross, Mark.Cross, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty},
+                    {Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty, Mark.Empty}
+                };
+
+            game.Board = new Board(board);
+
+            // Act
+            var actualMove = player.MakeMove();
+
+            // Assert : Expected to be
+            Assert.IsTrue(actualMove.X == 4 && actualMove.Y == 3);
+            // But real is
+            //Assert.IsTrue(actualMove.X == 0 && actualMove.Y == 1);
+        }
+
+        private Game GetGame(int width = 3, int height = 3, int inRow = 3)
+        {
+            return new Game(new GameSettings(width, height, inRow));
         }
     }
 }

@@ -14,7 +14,7 @@ namespace TicTacToe.ConsoleClient
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("Whould you like to play new game? y/n");
+                Console.WriteLine("Would you like to play new game? y/n");
                 var key = Console.ReadKey();
                 Console.WriteLine();
 

@@ -115,20 +115,29 @@ namespace TicTacToe.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Forkable AI.
+        /// </summary>
+        internal static string ForkableAI {
+            get {
+                return ResourceManager.GetString("ForkableAI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Human like AI.
+        /// </summary>
+        internal static string HumanLikeAI {
+            get {
+                return ResourceManager.GetString("HumanLikeAI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Human.
         /// </summary>
         internal static string HumanPlayer {
             get {
                 return ResourceManager.GetString("HumanPlayer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Intuitive AI.
-        /// </summary>
-        internal static string IntuitiveAI {
-            get {
-                return ResourceManager.GetString("IntuitiveAI", resourceCulture);
             }
         }
         

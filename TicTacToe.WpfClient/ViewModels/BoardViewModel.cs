@@ -27,7 +27,8 @@ namespace TicTacToe.ViewModels
             {
                 for (int y = 0; y < board.Height; y++)
                 {
-                    boardView.Add(new TileViewModel(x, y));
+                    // invert x and y because .net arrays filled in row-column order
+                    boardView.Add(new TileViewModel(y, x));
                 }
             }
 

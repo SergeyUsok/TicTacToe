@@ -29,6 +29,10 @@ namespace TicTacToe.ViewModels
 
         private void OnGameStarted(GameStartedEvent @event)
         {
+            // Clean up after game (unsubscribe from events, cancel tasks etc.)
+            if (Game != null)
+                Game.Dispose();
+
             Game = new GameViewModel(@event.Game, @event.PlayerX, @event.PlayerO);
             Game.StartGameLoopAsync()
                 .ContinueWith(t => MessageBox.Show("Some error occurred " + t.Exception),

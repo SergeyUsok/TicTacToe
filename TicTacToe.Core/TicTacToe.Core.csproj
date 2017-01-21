@@ -46,7 +46,8 @@
     <Compile Include="Game.cs" />
     <Compile Include="DataObjects\GameSettings.cs" />
     <Compile Include="IGame.cs" />
-    <Compile Include="Players\IntuitiveAiPlayer.cs" />
+    <Compile Include="Players\HumanLikeAiPlayer.cs" />
+    <Compile Include="Players\ForkableAiPlayer.cs" />
     <Compile Include="Players\StupidRandomAiPlayer.cs" />
     <Compile Include="RoundRobinIterator.cs" />
     <Compile Include="Players\NeighborsLookingMiniMaxAiPlayer.cs" />

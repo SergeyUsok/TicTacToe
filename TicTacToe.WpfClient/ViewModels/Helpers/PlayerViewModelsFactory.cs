@@ -24,8 +24,11 @@ namespace TicTacToe.ViewModels.Helpers
             if (playerName.Equals(Resources.OptimizedMinimaxPlayer))
                 return new AiPlayerViewModel(new NeighborsLookingMiniMaxAiPlayer(game, playersMark, depth));
 
-            if (playerName.Equals(Resources.IntuitiveAI))
-                return new AiPlayerViewModel(new IntuitiveAiPlayer(game, playersMark));
+            if (playerName.Equals(Resources.ForkableAI))
+                return new AiPlayerViewModel(new ForkableAiPlayer(game, playersMark));
+
+            if (playerName.Equals(Resources.HumanLikeAI))
+                return new AiPlayerViewModel(new HumanLikeAiPlayer(game, playersMark));
 
             if (playerName.Equals(Resources.DummyAI))
                 return new AiPlayerViewModel(new StupidRandomAiPlayer(game, playersMark));

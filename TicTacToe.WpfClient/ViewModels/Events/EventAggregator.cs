@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace TicTacToe.ViewModels.Events
 {
+    // Naïve implementation of EventAggregator
     class EventAggregator
     {
         private readonly Dictionary<Type, object> _eventSubscribersMap = new Dictionary<Type, object>();
@@ -47,6 +48,21 @@ namespace TicTacToe.ViewModels.Events
                 {
                     var action = (Action<TEvent>)_eventSubscribersMap[key];
                     action += subscriber;
+                    _eventSubscribersMap[key] = action;
+                }
+            }
+        }
+
+        public void UnSubscribe<TEvent>(Action<TEvent> subscriber)
+        {
+            var key = typeof(TEvent);
+
+            lock (_syncLock)
+            {
+                if (_eventSubscribersMap.ContainsKey(key))
+                {
+                    var action = (Action<TEvent>)_eventSubscribersMap[key];
+                    action -= subscriber;
                     _eventSubscribersMap[key] = action;
                 }
             }

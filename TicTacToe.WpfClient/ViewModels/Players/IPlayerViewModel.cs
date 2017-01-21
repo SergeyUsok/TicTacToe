@@ -7,6 +7,8 @@ namespace TicTacToe.ViewModels.Players
     {
         Task<Move> MakeMoveAsync(BoardViewModel board);
 
+        void CleanUp();
+
         Mark MyMark { get; }
     }
 }

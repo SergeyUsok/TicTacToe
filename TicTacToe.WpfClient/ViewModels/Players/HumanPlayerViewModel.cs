@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TicTacToe.Core.DataObjects;
 using TicTacToe.ViewModels.Events;
 
@@ -36,12 +37,17 @@ namespace TicTacToe.ViewModels.Players
 
         private void OnTileClicked(TileClickedEvent @event)
         {
-            // If task complition source is not intialized
-            // then this event is not intended ofr current Player and we do nothing
+            // If task completion source is not initialized
+            // then this event is not intended for current Player and we do nothing
             if(_tcs == null)
                 return;
 
             _tcs.SetResult(new Move(@event.X, @event.Y, _playersMark));
+        }
+
+        public void CleanUp()
+        {
+            EventAggregator.Instance.UnSubscribe<TileClickedEvent>(OnTileClicked);
         }
     }
 }
